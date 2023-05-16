@@ -3,7 +3,7 @@ import Signin from '../pages/Signin';
 import Signup from '../pages/Signup';
 import NotFound from '../pages/NotFound';
 import Welcome from '../pages/Welcome';
-import { RequireAuth } from '../RequireAuth';
+import { RequireAuth } from './RequireAuth';
 
 export default () => {
     return (
