@@ -2,8 +2,9 @@ import { ChangeEvent, useState } from 'react';
 import { auth } from '../../libs/firebase';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { Button, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
 import { FirebaseError } from 'firebase/app';
+import { LoadingButton } from '@mui/lab';
 
 const PasswordReset = () => {
     const navigate = useNavigate();
@@ -11,15 +12,19 @@ const PasswordReset = () => {
     const [email, setEmail] = useState('');
     const [disabled, setDisabled] = useState(false);
     const [errorEmail, setErrorEmail] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setLoading(true);
         setDisabled(true);
         setErrorEmail(false);
         
         try {
             await sendPasswordResetEmail(auth, email);
-            navigate('/signin');
+            setOpen(true);
+            setLoading(false);
             setDisabled(false);
         } catch (error) {
             if (error instanceof FirebaseError) {
@@ -33,6 +38,7 @@ const PasswordReset = () => {
                 }
             }
             setDisabled(false);
+            setLoading(false);
         };
     }
 
@@ -57,13 +63,15 @@ const PasswordReset = () => {
                         sx={{ mb: 3 }}
                         fullWidth
                     />
-                    <Button
+                    <LoadingButton
                         type='submit'
                         variant='contained'
+                        loading={loading}
+                        loadingPosition='center'
                         disabled={disabled}
                         sx={{ borderRadius: 2, mb: 2, fontWeight: 'bold' }}
                         fullWidth
-                    >Recuperar minha senha</Button>
+                    >Recuperar minha senha</LoadingButton>
                     <Button
                         variant='text'
                         disabled={disabled}
@@ -72,6 +80,22 @@ const PasswordReset = () => {
                         onClick={()=>navigate('/signin')}
                     >Ou faça seu login agora!</Button>
                 </form>
+                <Dialog
+                    open={open}
+                    onClose={() => navigate('/signin')}
+                    PaperProps={{ sx: { borderRadius: 3, maxWidth: 'fit-content' } }} 
+                    fullWidth
+                >
+                    <DialogTitle sx={{ fontWeight: 'bold' }}>Estamos quase lá!</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText >
+                            Enviamos um email com o link de redefinição de senha para a sua caixa de email.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={()=>navigate('/signin')}>Ok</Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         </div>
     );
