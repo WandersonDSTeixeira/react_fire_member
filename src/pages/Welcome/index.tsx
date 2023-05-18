@@ -21,7 +21,7 @@ const Welcome = () => {
                 <div className='text-2xl font-bold text-center mb-10'>Seja bem-vindo!</div>
                 <Button
                     variant='contained'
-                    sx={{ mb: 2, borderRadius: 2 }}
+                    sx={{ mb: 2, borderRadius: 2, fontWeight: 'bold' }}
                     fullWidth
                     onClick={handleLogout}
                 >LOGOUT</Button>

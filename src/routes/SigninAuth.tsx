@@ -11,9 +11,11 @@ export const SigninAuth = ({ children }: Props) => {
     const navigate = useNavigate();
     
     useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) navigate('/welcome');
         });
+
+        return () => unsubscribe()
     }, []);
 
     return children;

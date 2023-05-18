@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../libs/firebase';
-import { Link, useNavigate } from 'react-router-dom';
-import { TextField } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Button, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { FirebaseError } from 'firebase/app';
 
@@ -77,65 +77,67 @@ const Signup = () => {
         <div className='mx-auto h-screen flex flex-row justify-center'>
             <div className='m-10 p-5 bg-white rounded-xl shadow-md w-2/3 sm:w-1/2 lg:w-1/3 h-fit'>
                 <div className='text-2xl font-bold text-center'>Cadastrar</div>
-                <div>
-                    <form onSubmit={handleSubmit} className='bg-white mt-5'>   
-                        <TextField
-                            id='emailField'
-                            type='email'
-                            label="digite seu email"
-                            variant="outlined"
-                            value={email}
-                            onChange={e => setEmail(e.target.value)}
-                            disabled={disabled}
-                            required
-                            error={errorEmailInvalid || errorEmailInUse}
-                            helperText={emailHelperText()}
-                            sx={{ mb: 2 }}
-                            fullWidth
-                        />
-                        <TextField
-                            id='passwordField'
-                            type='password'
-                            label="digite uma senha"
-                            variant="outlined"
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                            disabled={disabled}
-                            required
-                            error={errorPassword}
-                            helperText={ errorPassword ? 'a senha deve ter no mínimo 6 caracteres!' : '' }
-                            sx={{ mb: 2 }}
-                            fullWidth
-                        />
-                        <TextField
-                            id='confirmPasswordField'
-                            type='password'
-                            label="confirme a senha"
-                            variant="outlined"
-                            value={confirmPassword}
-                            onChange={e => setConfirmPassword(e.target.value)}
-                            disabled={disabled}
-                            required
-                            error={errorConfirmPassword}
-                            helperText={ errorConfirmPassword ? 'as senhas não batem!' : '' }
-                            sx={{ mb: 4 }}
-                            fullWidth
-                        />
-                        <LoadingButton
-                            type='submit'
-                            variant='contained'
-                            loading={loading}
-                            loadingPosition='center'
-                            loadingIndicator='carregando...'
-                            disabled={disabled}
-                            sx={{ mb: 2, borderRadius: 2 }}
-                            fullWidth
-                        >CRIAR CONTA</LoadingButton>
-                    </form>
-                    <div className='text-center hover:text-slate-700'>
-                        <Link to="/signin">Já criou sua conta antes? Faça o login agora!</Link>
-                    </div>
-                </div>
+                <form onSubmit={handleSubmit} className='bg-white mt-5'>   
+                    <TextField
+                        id='emailField'
+                        type='email'
+                        label="digite seu email"
+                        variant="outlined"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        disabled={disabled}
+                        required
+                        error={errorEmailInvalid || errorEmailInUse}
+                        helperText={emailHelperText()}
+                        sx={{ mb: 2 }}
+                        fullWidth
+                    />
+                    <TextField
+                        id='passwordField'
+                        type='password'
+                        label="digite uma senha"
+                        variant="outlined"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        disabled={disabled}
+                        required
+                        error={errorPassword}
+                        helperText={ errorPassword ? 'a senha deve ter no mínimo 6 caracteres!' : '' }
+                        sx={{ mb: 2 }}
+                        fullWidth
+                    />
+                    <TextField
+                        id='confirmPasswordField'
+                        type='password'
+                        label="confirme a senha"
+                        variant="outlined"
+                        value={confirmPassword}
+                        onChange={e => setConfirmPassword(e.target.value)}
+                        disabled={disabled}
+                        required
+                        error={errorConfirmPassword}
+                        helperText={ errorConfirmPassword ? 'as senhas não batem!' : '' }
+                        sx={{ mb: 4 }}
+                        fullWidth
+                    />
+                    <LoadingButton
+                        type='submit'
+                        variant='contained'
+                        loading={loading}
+                        loadingPosition='center'
+                        loadingIndicator='carregando...'
+                        disabled={disabled}
+                        sx={{ mb: 2, borderRadius: 2, fontWeight: 'bold' }}
+                        fullWidth
+                    >CRIAR CONTA</LoadingButton>
+                </form>
+                <Button
+                    variant='text'
+                    disabled={disabled}
+                    sx={{ borderRadius: 2 }}
+                    fullWidth
+                    onClick={()=>navigate('/signin')}
+                >Já criou sua conta antes? Faça o login agora!</Button>
             </div>
         </div>
     );

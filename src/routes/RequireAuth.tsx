@@ -11,9 +11,11 @@ export const RequireAuth = ({ children }: Props) => {
     const navigate = useNavigate();
     
     useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (!user) navigate('/signin');
         });
+
+        return () => unsubscribe()
     }, []);
 
     return children;

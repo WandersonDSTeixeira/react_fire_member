@@ -16,7 +16,6 @@ const theme = createTheme({
   },
   typography: {
     button: {
-      fontWeight: "bold",
       textTransform: 'none'
     }
   }
