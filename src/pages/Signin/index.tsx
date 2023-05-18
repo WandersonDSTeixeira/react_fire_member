@@ -1,8 +1,7 @@
 import { ChangeEvent, useState } from 'react';
 import { auth } from '../../libs/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
 import { Button, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { FirebaseError } from 'firebase/app';
@@ -14,15 +13,19 @@ const Signin = () => {
     const [password, setPassword] = useState('');
     const [disabled, setDisabled] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [errorEmail, setErrorEmail] = useState(false);
     const [errorPassword, setErrorPassword] = useState(false);
+    const [errorEmailInvalid, setErrorEmailInvalid] = useState(false);
+    const [errorEmailMissing, setErrorEmailMissing] = useState(false);
+    const [resetEmailSent, setResetEmailSent] = useState(false);
 
     const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
         setDisabled(true);
-        setErrorEmail(false);
+        setErrorEmailInvalid(false);
+        setErrorEmailMissing(false);
         setErrorPassword(false);
+        setResetEmailSent(false);
         
         await loginWithEmailAndPassword();
     }
@@ -30,22 +33,60 @@ const Signin = () => {
     const loginWithEmailAndPassword = async () => {
         try {
             const cred = await signInWithEmailAndPassword(auth, email, password);
-            Cookies.set('isAuth', `user ${cred.user.uid}`);
             setDisabled(false);
             setLoading(false);
             navigate('/welcome');
         } catch (error) {
             if (error instanceof FirebaseError) {
-                (error.code == 'auth/wrong-password') ? setErrorPassword(true) : setErrorEmail(true);
+                (error.code == 'auth/wrong-password') ? setErrorPassword(true) : setErrorEmailInvalid(true);
             }
             setDisabled(false);
             setLoading(false);
         };
     }
 
+    const handlePasswordReset = async () => {
+        setDisabled(true);
+        setErrorEmailInvalid(false);
+        setErrorEmailMissing(false);
+        setErrorPassword(false);
+        setResetEmailSent(false);        
+        
+        try {
+            await sendPasswordResetEmail(auth, email)
+            setResetEmailSent(true);
+            setDisabled(false);
+        } catch (error) {
+            if (error instanceof FirebaseError) {
+                switch (error.code) {
+                    case 'auth/missing-email':
+                        setErrorEmailMissing(true);
+                        break;
+                    case 'auth/invalid-email':
+                        setErrorEmailInvalid(true);
+                        break;
+                    case 'auth/user-not-found':
+                        setErrorEmailInvalid(true);
+                        break;
+                }
+            }
+            setDisabled(false);
+        };
+    }
+
+    const emailHelperText = () => {
+        if (errorEmailInvalid) {
+            return 'email inválido!';
+        } else if (errorEmailMissing) {
+            return 'preencha com seu email!';
+        } else {
+            return '';
+        }
+    }
+
     return (
         <div className='mx-auto h-screen flex flex-row justify-center'>
-            <div className='m-10 p-5 bg-white rounded-xl shadow-md w-1/2 lg:w-1/3 h-fit'>
+            <div className='m-10 p-5 bg-white rounded-xl shadow-md w-2/3 sm:w-1/2 lg:w-1/3 h-fit'>
                 <div className='text-2xl font-bold text-center'>Entrar</div>
                 <div>
                     <form onSubmit={handleSubmit} className='bg-white mt-4'>
@@ -58,8 +99,8 @@ const Signin = () => {
                             onChange={e => setEmail(e.target.value)}
                             disabled={disabled}
                             required
-                            error={errorEmail}
-                            helperText={ errorEmail ? 'email inválido' : '' }
+                            error={errorEmailInvalid || errorEmailMissing}
+                            helperText={emailHelperText()}
                             sx={{ mb: 2 }}
                             fullWidth
                         />
@@ -90,10 +131,20 @@ const Signin = () => {
                         <Button
                             variant='contained'
                             disabled={disabled}
-                            sx={{ borderRadius: 2 }}
+                            sx={{ mb: 2, borderRadius: 2 }}
                             fullWidth
                             onClick={()=>navigate('/signup')}
                         >CADASTRAR</Button>
+                        <Button
+                            variant='text'
+                            disabled={disabled}
+                            sx={{ borderRadius: 2 }}
+                            fullWidth
+                            onClick={handlePasswordReset}
+                        >Esqueceu a senha?</Button>
+                        { resetEmailSent &&
+                            <div className='text-center'>Abra seu email para redefinir sua senha</div>
+                        }
                     </form>
                 </div>
             </div>

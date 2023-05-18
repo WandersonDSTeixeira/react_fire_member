@@ -11,12 +11,13 @@ const root = ReactDOM.createRoot(
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#000'
+      main: 'rgb(0, 0, 0)'
     }
   },
   typography: {
     button: {
-      fontWeight: "bold"
+      fontWeight: "bold",
+      textTransform: 'none'
     }
   }
 });

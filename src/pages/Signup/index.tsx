@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../libs/firebase';
 import { Link, useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
 import { TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { FirebaseError } from 'firebase/app';
@@ -42,7 +41,6 @@ const Signup = () => {
     const createUser = async () => {
         try {
             const cred = await createUserWithEmailAndPassword(auth, email, password);
-            Cookies.set('isAuth', `user ${cred.user.uid}`);
             setDisabled(false);
             setLoading(false);
             navigate('/welcome');
@@ -77,7 +75,7 @@ const Signup = () => {
 
     return (
         <div className='mx-auto h-screen flex flex-row justify-center'>
-            <div className='m-10 p-5 bg-white rounded-xl shadow-md w-1/2 lg:w-1/3 h-fit'>
+            <div className='m-10 p-5 bg-white rounded-xl shadow-md w-2/3 sm:w-1/2 lg:w-1/3 h-fit'>
                 <div className='text-2xl font-bold text-center'>Cadastrar</div>
                 <div>
                     <form onSubmit={handleSubmit} className='bg-white mt-5'>   

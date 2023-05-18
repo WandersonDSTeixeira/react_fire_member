@@ -4,11 +4,14 @@ import Signup from '../pages/Signup';
 import NotFound from '../pages/NotFound';
 import Welcome from '../pages/Welcome';
 import { RequireAuth } from './RequireAuth';
+import { SigninAuth } from './SigninAuth';
+import { HomeAuth } from './HomeAuth';
 
 export default () => {
     return (
         <Routes>
-            <Route path='/signin' element={<Signin />} />
+            <Route path='/' element={<HomeAuth />} />
+            <Route path='/signin' element={<SigninAuth><Signin /></SigninAuth>} />
             <Route path='/signup' element={<Signup />} />
             <Route path='/welcome' element={<RequireAuth><Welcome /></RequireAuth>} />
             <Route path='*' element={<NotFound />} />

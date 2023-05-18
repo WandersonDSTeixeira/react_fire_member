@@ -1,20 +1,16 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-type Props = {
-    children: JSX.Element
-}
-
-export const RequireAuth = ({ children }: Props) => {
+export const HomeAuth = () => {
     const auth = getAuth();
     const navigate = useNavigate();
     
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
-            if (!user) navigate('/signin');
+            (user) ? navigate('/welcome') : navigate('/signin');
         });
     }, []);
 
-    return children;
+    return <>Carregando</>
 }
