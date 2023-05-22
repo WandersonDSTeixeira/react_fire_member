@@ -6,7 +6,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { FirebaseError } from 'firebase/app';
 import { LoadingButton } from '@mui/lab';
 
-const PasswordReset = () => {
+const ResetPassword = () => {
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
@@ -101,4 +101,4 @@ const PasswordReset = () => {
     );
 }
 
-export default PasswordReset;
+export default ResetPassword;

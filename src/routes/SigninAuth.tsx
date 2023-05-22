@@ -12,7 +12,7 @@ export const SigninAuth = ({ children }: Props) => {
     
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) navigate('/welcome');
+            if (user) navigate('/contents');
         });
 
         return () => unsubscribe()

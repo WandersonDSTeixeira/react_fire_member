@@ -31,7 +31,7 @@ const Signin = () => {
             const cred = await signInWithEmailAndPassword(auth, email, password);
             setDisabled(false);
             setLoading(false);
-            navigate('/welcome');
+            navigate('/contents');
         } catch (error) {
             if (error instanceof FirebaseError) {
                 (error.code == 'auth/wrong-password') ? setErrorPassword(true) : setErrorEmail(true);
@@ -96,7 +96,7 @@ const Signin = () => {
                         disabled={disabled}
                         sx={{ borderRadius: 2 }}
                         fullWidth
-                        onClick={()=>navigate('/password-reset')}
+                        onClick={()=>navigate('/reset-password')}
                     >Esqueceu a senha?</Button>
                 </form>
             </div>

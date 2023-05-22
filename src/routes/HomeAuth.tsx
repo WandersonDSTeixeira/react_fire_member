@@ -9,7 +9,7 @@ export const HomeAuth = () => {
     
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
-            (user) ? navigate('/welcome') : navigate('/signin');
+            (user) ? navigate('/contents') : navigate('/signin');
         });
 
         return () => unsubscribe()

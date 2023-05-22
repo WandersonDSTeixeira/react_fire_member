@@ -43,7 +43,7 @@ const Signup = () => {
             const cred = await createUserWithEmailAndPassword(auth, email, password);
             setDisabled(false);
             setLoading(false);
-            navigate('/welcome');
+            navigate('/contents');
         } catch (error) {
             if (error instanceof FirebaseError) {
                 switch (error.code) {

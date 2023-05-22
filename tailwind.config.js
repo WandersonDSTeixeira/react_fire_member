@@ -2,7 +2,11 @@
 module.exports = {
   content: ["./src/**/*.{html,js,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'fireMember': '#ef6d00'
+      }
+    },
   },
   plugins: [],
 }

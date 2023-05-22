@@ -11,12 +11,31 @@ const root = ReactDOM.createRoot(
 const theme = createTheme({
   palette: {
     primary: {
-      main: 'rgb(0, 0, 0)'
+      main: '#000'
+    },
+    secondary: {
+      main: '#FFF'
+    },
+    info: {
+      main: '#EF8700'
     }
   },
   typography: {
     button: {
       textTransform: 'none'
+    }
+  },
+  components: {
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          color: '#FFF',
+          fontSize: '12px'
+        },
+        notchedOutline: {
+          borderColor: '#444'
+        }
+      }
     }
   }
 });
