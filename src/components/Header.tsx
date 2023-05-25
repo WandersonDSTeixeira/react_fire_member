@@ -27,13 +27,13 @@ const Header = () => {
     }
 
   return (
-    <div className='mx-auto h-28 sm:h-14 w-full flex flex-col sm:flex-row items-center border-b-4 border-stone-950 p-3 fixed top-0 bg-stone-800'>
-      <div className='flex w-full md:w-4/5 items-center'>
+    <div className='z-10 mx-auto h-36 md:h-20 w-full flex flex-col md:flex-row items-center border-b-2 border-stone-950 p-3 fixed top-0 bg-stone-800'>
+      <div className='flex w-full items-center'>
         <div className='w-2/5 md:w-3/5 ml-10'>
-          <Button color='info' sx={{ fontSize: '18px', '&:hover': { backgroundColor: '#292524'} }}>FireMember</Button>
+          <Button color='info' sx={{ fontSize: '24px', '&:hover': { backgroundColor: '#292524'} }}>FireMember</Button>
         </div>
         <div className='w-3/5 md:w-2/5'>
-          <FormControl margin='none' size='small' fullWidth variant='outlined'>
+          <FormControl margin='none' fullWidth variant='outlined'>
             <OutlinedInput
               onFocus={() => setFocused(true)}
               onBlur={()=> setFocused(false)}
@@ -50,7 +50,7 @@ const Header = () => {
               placeholder='Buscar'
               endAdornment={
               <InputAdornment position="end">
-                <IconButton color='secondary' onClick={()=>{}} edge='end'><SearchIcon /></IconButton>
+                  <SearchIcon sx={{ color: '#FFF' }} />
               </InputAdornment>}
             />
           </FormControl>
@@ -60,22 +60,22 @@ const Header = () => {
         <div className='flex flex-row'>
           <Tooltip title="Tamanho da fonte" disableInteractive>
             <IconButton sx={{ ml: 3, '&:hover': { backgroundColor: '#333' } }}>
-              <FormatSizeIcon fontSize='small' color='secondary' />
+              <FormatSizeIcon color='secondary' />
             </IconButton>
           </Tooltip>
           <Tooltip title="Alternar para tela cheia" disableInteractive>
             <IconButton sx={{ '&:hover': { backgroundColor: '#333' } }}>
-              <FullscreenIcon fontSize='small' color='secondary' />
+              <FullscreenIcon color='secondary' />
             </IconButton>
           </Tooltip>
           <Tooltip title="Alternar escuro/claro" disableInteractive>
             <IconButton sx={{ '&:hover': { backgroundColor: '#333' } }}>
-              <Brightness7Icon fontSize='small' color='secondary' />
+              <Brightness7Icon color='secondary' />
             </IconButton>
           </Tooltip>
           <Tooltip title="Notificações" disableInteractive>
             <IconButton sx={{ '&:hover': { backgroundColor: '#333' } }}>
-              <NotificationsIcon fontSize='small' color='secondary' />
+              <NotificationsIcon color='secondary' />
             </IconButton>
           </Tooltip>
         </div>
@@ -83,9 +83,9 @@ const Header = () => {
           variant="text"
           size='small'
           color='secondary'
-          sx={{ mr: 1, px: 3, fontSize: '12px', borderRadius: 2, '&:hover': { backgroundColor: '#333'} }}
+          sx={{ mr: 1, px: 2, py: 1.5, fontSize: '14px', fontWeight: 'bold', borderRadius: 2, '&:hover': { backgroundColor: '#333'} }}
           onClick={()=>setOpen(true)}
-          endIcon={<Avatar sx={{ w: 32, h: 32, color: '#000', backgroundColor: "#777" }}>I</Avatar>}
+          endIcon={<Avatar sx={{ color: '#000', backgroundColor: "#777" }}>I</Avatar>}
         >Isaac</Button>        
         <Menu
           open={open}
@@ -98,10 +98,10 @@ const Header = () => {
               color: '#FFF'
             }
           }}
-          transformOrigin={{ horizontal: 'center', vertical: 'top' }}
-          anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+          anchorReference="anchorPosition"
+          anchorPosition={{ top: 70, left: 1250 }}
         >
-          <MenuItem onClick={() => {}} sx={{ fontSize: '14px', '&:hover': { backgroundColor: '#333' } }}>
+          <MenuItem onClick={()=>navigate('/profile')} sx={{ fontSize: '14px', '&:hover': { backgroundColor: '#333' } }}>
               <AccountCircleIcon /> <span className='ml-2'>Meu Perfil</span>
           </MenuItem>
           <MenuItem onClick={handleLogout} sx={{ '&:hover': { backgroundColor: '#333' } }}>

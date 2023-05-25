@@ -4,9 +4,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'fireMember': '#ef6d00'
+        'FireMember': '#ef6d00'
       }
-    },
+    }
   },
   plugins: [],
 }

@@ -26,7 +26,7 @@ const Signup = () => {
         setErrorEmailInvalid(false);
         setErrorEmailInUse(false);
         setErrorPassword(false);
-        setErrorConfirmPassword(false)
+        setErrorConfirmPassword(false);
 
         if(password !== confirmPassword) {
             setErrorConfirmPassword(true);
