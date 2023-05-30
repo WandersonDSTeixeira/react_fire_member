@@ -33,7 +33,7 @@ const theme = createTheme({
           fontSize: '12px'
         },
         notchedOutline: {
-          borderColor: '#444'
+          borderColor: '#444',
         }
       }
     }

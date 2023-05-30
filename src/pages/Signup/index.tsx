@@ -1,19 +1,25 @@
 import { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../libs/firebase';
+import { auth, firestore } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
-import { Button, TextField } from '@mui/material';
+import { Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { FirebaseError } from 'firebase/app';
+import SignupInput from '../../components/SignupInput';
+import { setDoc, doc } from 'firebase/firestore';
 
 const Signup = () => {
     const navigate = useNavigate();
 
+    const [name, setName] = useState('');
+    const [familyName, setFamilyName] = useState('');
     const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [disabled, setDisabled] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [errorName, setErrorName] = useState(false);
     const [errorEmailInvalid, setErrorEmailInvalid] = useState(false);
     const [errorEmailInUse, setErrorEmailInUse] = useState(false);
     const [errorPassword, setErrorPassword] = useState(false);
@@ -23,10 +29,18 @@ const Signup = () => {
         e.preventDefault();
         setLoading(true);
         setDisabled(true);
+        setErrorName(false);
         setErrorEmailInvalid(false);
         setErrorEmailInUse(false);
         setErrorPassword(false);
         setErrorConfirmPassword(false);
+
+        if (name.length < 2) {
+            setErrorName(true);
+            setDisabled(false);
+            setLoading(false);
+            return;
+        }
 
         if(password !== confirmPassword) {
             setErrorConfirmPassword(true);
@@ -41,6 +55,7 @@ const Signup = () => {
     const createUser = async () => {
         try {
             const cred = await createUserWithEmailAndPassword(auth, email, password);
+            await setDoc(doc(firestore, 'users', cred.user.uid), { name, familyName, phone, email });
             setDisabled(false);
             setLoading(false);
             navigate('/contents');
@@ -74,51 +89,63 @@ const Signup = () => {
     }
 
     return (
-        <div className='mx-auto h-screen flex flex-row justify-center'>
-            <div className='m-10 p-5 bg-white rounded-xl shadow-md w-2/3 sm:w-1/2 lg:w-1/3 h-fit'>
+        <div className='mx-auto h-screen flex flex-row justify-center mb-5'>
+            <div className='m-5 mb-20 p-5 bg-white rounded-xl shadow-md w-2/3 sm:w-1/2 lg:w-1/3 h-fit'>
                 <div className='text-2xl font-bold text-center'>Cadastrar</div>
-                <form onSubmit={handleSubmit} className='bg-white mt-5'>   
-                    <TextField
-                        id='emailField'
-                        type='email'
+                <form onSubmit={handleSubmit} className='bg-white mt-5'>
+                    <SignupInput
+                        type='text'
+                        label="digite seu nome"
+                        value={name}
+                        onChange={setName}
+                        disabled={disabled}
+                        required
+                        error={errorName}
+                        helperText={errorName ? 'seu nome deve ter no mínimo 2 caracteres!' : ''}
+                    />
+                    <SignupInput
+                        type='text'
+                        label="digite seu sobrenome"
+                        value={familyName}
+                        onChange={setFamilyName}
+                        disabled={disabled}
+                    />
+                    <SignupInput
+                        type='text'
+                        label="digite seu telefone"
+                        value={phone}
+                        onChange={setPhone}
+                        disabled={disabled}
+                    />
+                    <SignupInput
+                        type='text'
                         label="digite seu email"
-                        variant="outlined"
                         value={email}
-                        onChange={e => setEmail(e.target.value)}
+                        onChange={setEmail}
                         disabled={disabled}
                         required
                         error={errorEmailInvalid || errorEmailInUse}
                         helperText={emailHelperText()}
-                        sx={{ mb: 2 }}
-                        fullWidth
                     />
-                    <TextField
-                        id='passwordField'
+                    <SignupInput
                         type='password'
                         label="digite uma senha"
-                        variant="outlined"
                         value={password}
-                        onChange={e => setPassword(e.target.value)}
+                        onChange={setPassword}
                         disabled={disabled}
                         required
                         error={errorPassword}
-                        helperText={ errorPassword ? 'a senha deve ter no mínimo 6 caracteres!' : '' }
-                        sx={{ mb: 2 }}
-                        fullWidth
+                        helperText={errorPassword ? 'a senha deve ter no mínimo 6 caracteres!' : ''}
                     />
-                    <TextField
-                        id='confirmPasswordField'
+                    <SignupInput
                         type='password'
                         label="confirme a senha"
-                        variant="outlined"
                         value={confirmPassword}
-                        onChange={e => setConfirmPassword(e.target.value)}
+                        onChange={setConfirmPassword}
                         disabled={disabled}
                         required
                         error={errorConfirmPassword}
-                        helperText={ errorConfirmPassword ? 'as senhas não batem!' : '' }
-                        sx={{ mb: 4 }}
-                        fullWidth
+                        helperText={errorConfirmPassword ? 'as senhas não batem!' : ''}
                     />
                     <LoadingButton
                         type='submit'

@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react';
-import { auth } from '../../libs/firebase';
+import { auth } from '../../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { Button, TextField } from '@mui/material';
@@ -92,7 +92,6 @@ const Signin = () => {
                         onClick={()=>navigate('/signup')}
                     >CADASTRAR</Button>
                     <Button
-                        variant='text'
                         disabled={disabled}
                         sx={{ borderRadius: 2 }}
                         fullWidth

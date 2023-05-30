@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react';
-import { auth } from '../../libs/firebase';
+import { auth } from '../../firebase';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
