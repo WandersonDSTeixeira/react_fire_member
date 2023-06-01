@@ -1,4 +1,4 @@
-import { User, onAuthStateChanged, signOut, updatePassword } from 'firebase/auth';
+import { User, signOut, updatePassword } from 'firebase/auth';
 import { Button, Badge, IconButton, Avatar } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { useState, useEffect } from 'react';
@@ -7,14 +7,16 @@ import { FirebaseError } from 'firebase/app';
 import ModalChangePassword from '../../components/ModalChangePassword';
 import ModalEditProfile from '../../components/ModalEditProfile';
 import { auth, firestore, storage } from '../../firebase';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { deleteObject, getDownloadURL, listAll, ref, uploadBytes } from 'firebase/storage';
+import { doc, getDoc, updateDoc, deleteField } from 'firebase/firestore';
+import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import SendIcon from '@mui/icons-material/Send';
 import { CircularProgress } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useUserContext } from '../../contexts/User';
 
 const Profile = () => {
   const navigate = useNavigate();
+  const { user, setUser } = useUserContext();
   
   const [openResetPassword, setOpenResetPassword] = useState(false);
   const [openEditProfile, setOpenEditProfile] = useState(false);
@@ -29,56 +31,51 @@ const Profile = () => {
   const [familyName, setFamilyName] = useState('');
   const [phone, setPhone] = useState('');
   const [errorName, setErrorName] = useState(false);
-  const [userName, setUserName] = useState('');
-  const [userFamilyName, setUserFamilyName] = useState('');
-  const [userEmail, setUserEmail] = useState('');
-  const [userPhone, setUserPhone] = useState('');
-  const [profileUrl, setProfileUrl] = useState('https://firebasestorage.googleapis.com/v0/b/zac1-5c7cb.appspot.com/o/profile-images%2FdefaultProfile.png?alt=media&token=002c6b80-f8f4-433a-bc2b-e6d87b48ac65');
-  const [coverUrl, setCoverUrl] = useState('https://firebasestorage.googleapis.com/v0/b/zac1-5c7cb.appspot.com/o/cover-images%2FdefaultCover.jpeg?alt=media&token=13d169ca-2284-4696-bb54-e864d9c65370');
-  const [loadingCover, setLoadingCover] = useState(true);
-  const [showDeleteButton, setShowDeleteButton] = useState(false);
+  // const [userName, setUserName] = useState('');
+  // const [userFamilyName, setUserFamilyName] = useState('');
+  // const [userEmail, setUserEmail] = useState('');
+  // const [userPhone, setUserPhone] = useState('');
+  // const [avatarUrl, setAvatarUrl] = useState('https://firebasestorage.googleapis.com/v0/b/zac1-5c7cb.appspot.com/o/profile-images%2FdefaultAvatar.png?alt=media&token=2a420ee4-0976-4ec0-9323-87ad18ec9e70');
+  // const [coverUrl, setCoverUrl] = useState('https://firebasestorage.googleapis.com/v0/b/zac1-5c7cb.appspot.com/o/cover-images%2FdefaultCover.jpeg?alt=media&token=13d169ca-2284-4696-bb54-e864d9c65370');
+  const [loadingCover, setLoadingCover] = useState(false);
+  const [loadingAvatar, setLoadingAvatar] = useState(false);
+  const [showDeleteCoverButton, setShowDeleteCoverButton] = useState(false);
+  const [showFileInput, setShowFileInput] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const userRef = doc(firestore, 'users', user.uid);
-        const userDoc = await getDoc(userRef);
-        const userData = userDoc.data();
+    setName(user?.name as string);
+    setFamilyName(user?.familyName as string);
+    setPhone(user?.phone as string);    
+    // if (user?.avatarUrl) setAvatarUrl(user?.avatarUrl);
+    // if (user?.coverUrl) setCoverUrl(user?.coverUrl);
+    // setLoadingCover(false);
+    // setLoadingAvatar(false);
 
-        setName(userData?.name);
-        setUserName(userData?.name);
-        setFamilyName(userData?.familyName);
-        setUserFamilyName(userData?.familyName);
-        setPhone(userData?.phone);
-        setUserPhone(userData?.phone);
-        setUserEmail(userData?.email);
-        setLoadingCover(false);
-
-        const profilePicRef = ref(storage, 'profile-images/');
-        const profilePics = await listAll(profilePicRef);
-
-        for (let i in profilePics.items) {
-          if (profilePics.items[i].name.includes(`profile${userData?.name}${user.uid}`)) {
-            const url = await getDownloadURL(profilePics.items[i]);
-            setProfileUrl(url);
-          }
-        }
-
-        const coverPicRef = ref(storage, 'cover-images/');
-        const coverPics = await listAll(coverPicRef);
-
-        for (let i in coverPics.items) {
-          if (coverPics.items[i].name.includes(`cover${userData?.name}${user.uid}`)) {
-            const url = await getDownloadURL(coverPics.items[i]);
-            setCoverUrl(url);
-            setShowDeleteButton(true);
-          }
-        }
-      }
-    });
-
-    return () => unsubscribe()
   }, []);
+
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, async (user) => {
+  //     if (user) {
+  //       const userRef = doc(firestore, 'users', user.uid);
+  //       const userDoc = await getDoc(userRef);
+  //       const userData = userDoc.data();
+
+  //       setName(userData?.name);
+  //       setUserName(userData?.name);
+  //       setFamilyName(userData?.familyName);
+  //       setUserFamilyName(userData?.familyName);
+  //       setPhone(userData?.phone);
+  //       setUserPhone(userData?.phone);
+  //       setUserEmail(userData?.email);
+  //       if (userData?.avatarUrl) setAvatarUrl(userData?.avatarUrl);
+  //       if (userData?.coverUrl) setCoverUrl(userData?.coverUrl);
+  //       setLoadingCover(false);
+  //       setLoadingAvatar(false);
+  //     }
+  //   });
+
+  //   return () => unsubscribe()
+  // }, []);
 
   const handleSubmitPassword = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -95,8 +92,7 @@ const Profile = () => {
     }
 
     try {
-      const user = auth.currentUser as User;
-      await updatePassword(user, password);
+      await updatePassword(auth.currentUser as User, password);
       await signOut(auth);
       setDisabled(false);
       setLoading(false);
@@ -131,12 +127,11 @@ const Profile = () => {
     }
 
     try {
-      const user = auth.currentUser as User;
-      const userRef = doc(firestore, 'users', user.uid)
+      const userRef = doc(firestore, 'users', user?.id as string)
       await updateDoc(userRef, { name, familyName, phone });
+      setUser({ ...user, name, familyName, phone });
       setDisabled(false);
       setLoading(false);
-      window.location.href = '/profile';
     } catch(error) {
         if (error instanceof FirebaseError) {
           console.log(error.code)
@@ -146,7 +141,7 @@ const Profile = () => {
       };
   }
 
-  const handleSubmitImageCover = async (e: React.ChangeEvent<HTMLFormElement>) => {
+  const handleSubmitCover = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoadingCover(true);
     setDisabled(true);
@@ -155,49 +150,47 @@ const Profile = () => {
 
     if (file && file.size > 0) {
       if (['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
-        const newFile = ref(storage, `cover-images/cover${userName}${auth.currentUser?.uid}`);
+        const newFile = ref(storage, `cover-images/cover${user?.name}${user?.id}`);
         const upload = await uploadBytes(newFile, file);
-        const url = await getDownloadURL(upload.ref);
-        setCoverUrl(url);
+        const coverUrl = await getDownloadURL(upload.ref);
+        setUser({ ...user, coverUrl });
+        const userRef = doc(firestore, 'users', user?.id as string);
+        await updateDoc(userRef, { coverUrl });
       } else {
         alert('O arquivo precisa ser uma imagem jpeg, jpg ou png!');
       }
     }
     setLoadingCover(false);
     setDisabled(false);
-    setShowDeleteButton(true);
+    setShowDeleteCoverButton(true);
   }
 
-  const handleSubmitImageProfile = async (e: React.ChangeEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleCoverDelete = async () => {
     setDisabled(true);
-    const formData = new FormData(e.currentTarget);
-    const file = formData.get('image') as File;
-
-    if (file && file.size > 0) {
-      if (['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
-        const newFile = ref(storage, `profile-images/profile${userName}${auth.currentUser?.uid}`);
-        const upload = await uploadBytes(newFile, file);
-        const url = await getDownloadURL(upload.ref);
-        setProfileUrl(url);
-        window.location.href = '/profile';
-      } else {
-        alert('O arquivo precisa ser uma imagem jpeg, jpg ou png!');
-      }
-    }
+    setLoadingCover(true);
+    const coverRef = ref(storage, `cover-images/cover${user?.name}${user?.id}`);
+    await deleteObject(coverRef);
+    const defaultCoverRef = ref(storage, 'cover-images/defaultCover.jpeg');
+    const coverUrl = await getDownloadURL(defaultCoverRef);
+    const userRef = doc(firestore, 'users', user?.id as string);
+    await updateDoc(userRef, { coverUrl });
+    setUser({ ...user, coverUrl });
     setDisabled(false);
+    setLoadingCover(false);
   }
 
-  const handleCoverPicDelete = async () => {
-    const coverPicRef = ref(storage, `cover-images/cover${userName}${auth.currentUser?.uid}`);
-    await deleteObject(coverPicRef);
-    window.location.href = '/profile';
-  }
-
-  const handleProfilePicDelete = async () => {
-    const profilePicRef = ref(storage, `profile-images/profile${userName}${auth.currentUser?.uid}`);
-    await deleteObject(profilePicRef);
-    window.location.href = '/profile';
+  const handleAvatarDelete = async () => {
+    setDisabled(true);
+    setLoadingAvatar(true);
+    const avatarRef = ref(storage, `profile-images/avatar${user?.name}${user?.id}`);
+    await deleteObject(avatarRef);
+    const defaultAvatarRef = ref(storage, 'profile-images/defaultAvatar.png');
+    const avatarUrl = await getDownloadURL(defaultAvatarRef);
+    const userRef = doc(firestore, 'users', user?.id as string);
+    await updateDoc(userRef, { avatarUrl });
+    setUser({ ...user, avatarUrl });
+    setDisabled(false);
+    setLoadingAvatar(false);
   }
 
   const passwordHelperText = () => {
@@ -212,22 +205,25 @@ const Profile = () => {
 
   return (
     <div className='flex flex-col p-5 bg-stone-900 w-full h-screen'>
-      <div className='mt-36 md:mt-24 mx-0 sm:mx-20 md:mx-32 lg:mx-56 xl:mx-72 h-3/4 xl:max-h-[450px]'>
-        <div className='flex flex-col sm:pb-0 h-3/5 rounded-lg rounded-b-none'>
+      <div className='mt-36 md:mt-24 mx-0 sm:mx-20 md:mx-32 lg:mx-56 xl:mx-72 h-3/4 max-h-[400px] md:max-h-[450px]'>
+        <div className='flex flex-col h-3/5 rounded-lg rounded-b-none'>
           {loadingCover &&
             <div className='h-full flex justify-center items-center bg-[#666]'>
               <CircularProgress color='secondary' />
             </div>
           }
           {!loadingCover &&
-            <img className='object-cover h-full w-full rounded-lg rounded-b-none' alt='' src={coverUrl} />
+            <img className='object-cover h-full w-full rounded-lg rounded-b-none' alt='' src={user?.coverUrl} />
           }
-          {/* <div className='flex justify-end'>
-            <IconButton sx={{ color: '#FFF', backgroundColor: '#EF8700', '&:hover': { backgroundColor: '#A75E00' } }}>
+          <div className='flex justify-end -mt-56 md:-mt-64 mr-2'>
+            <IconButton
+              sx={{ color: '#FFF', backgroundColor: '#EF8700', '&:hover': { backgroundColor: '#A75E00' } }}
+              onClick={()=>setShowFileInput(!showFileInput)}
+            >
               <EditIcon />
             </IconButton>
-          </div> */}
-          <div className='flex flex-1 justify-center sm:justify-start items-end mt-12 sm:mt-44 sm:ml-6 z-10 absolute'>
+          </div>
+          <div className='mt-16 sm:mt-36 md:mt-44 ml-6 z-10 absolute'>
             <Badge
               overlap='circular'
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -241,42 +237,43 @@ const Profile = () => {
                 </IconButton>
               }
             >
-              <Avatar sx={{ color: '#666', width: 150, height: 150 }} alt='' src={profileUrl} />
+              {loadingAvatar &&
+                <div className='h-full flex justify-center items-center bg-[#666]'>
+                  <CircularProgress color='secondary' />
+                </div>
+              }
+              {!loadingAvatar &&
+                <Avatar sx={{ color: '#666', width: 150, height: 150 }} alt='' src={user?.avatarUrl} />
+              }
             </Badge>
           </div>
         </div>
-        <div className='px-3 py-2 bg-[#292524] h-2/5 rounded-lg rounded-t-none flex flex-col justify-between'>
-          <div className='flex flex-col items-end justify-center sm:justify-end'>
-            <div>
-              <form method='POST' onSubmit={handleSubmitImageCover} className=''>
-                <input type='file' name='image' />
+        {showFileInput &&
+          <div className='flex justify-end pr-5 py-1 border'>
+            <form method='POST' onSubmit={handleSubmitCover}>
+              <input type='file' name='image' className='w-56 sm:w-48 md:w-56 lg:w-72 xl:w-80' />
+              <IconButton
+                type='submit'
+                sx={{ ml: 1, color: '#FFF', backgroundColor: '#EF8700', '&:hover': { backgroundColor: '#A75E00' } }}
+                disabled={disabled}
+              >
+                <SendIcon />
+              </IconButton>
+              {showDeleteCoverButton &&
                 <IconButton
-                  type='submit'
                   sx={{ ml: 1, color: '#FFF', backgroundColor: '#EF8700', '&:hover': { backgroundColor: '#A75E00' } }}
+                  onClick={handleCoverDelete}
                   disabled={disabled}
                 >
-                  <SendIcon />
+                  <DeleteIcon sx={{ fontSize: '26px' }} />
                 </IconButton>
-                {showDeleteButton &&
-                  <IconButton
-                    sx={{ ml: 1, color: '#FFF', backgroundColor: '#EF8700', '&:hover': { backgroundColor: '#A75E00' } }}
-                    onClick={handleCoverPicDelete}
-                    disabled={disabled}
-                  >
-                    <DeleteIcon sx={{ fontSize: '26px' }} />
-                  </IconButton>
-                }
-              </form>
-            </div>
+              }
+            </form>
           </div>
-          <div className='flex flex-row items-center justify-between'>
-            <div className='flex items-center sm:items-start flex-col justify-end sm:mt-10'>
-              <span className='text-white text-2xl mb-1'>{`${userName} ${userFamilyName}`}</span>
-              <span className='text-white mb-1'>{userEmail}</span>
-              <span className='text-white text-sm mb-1'>{userPhone}</span>
-            </div>
-            <div className={'flex'}>
-              <Button
+        }
+        <div className='p-3 bg-[#292524] h-2/5 rounded-lg rounded-t-none flex flex-col justify-between'>
+          <div className='flex justify-center sm:justify-end'>
+            <Button
                 variant='contained'
                 color='info'
                 sx={{ borderRadius: 2, color: '#FFF', fontWeight: 'bold' }}
@@ -288,7 +285,11 @@ const Profile = () => {
                 sx={{ borderRadius: 2, color: '#FFF', fontWeight: 'bold', ml: 2 }}
                 onClick={()=>setOpenEditProfile(true)}
               >Editar Perfil</Button>
-            </div>
+          </div>
+          <div className='flex items-center sm:items-start flex-col justify-end'>
+            <span className='text-white text-2xl mb-1 text-center mt-1 sm:mt-0 truncate max-w-[320px] sm:max-w-full'>{`${user?.name} ${user?.familyName}`}</span>
+            <span className='text-white mb-1'>{user?.email}</span>
+            <span className='text-white text-sm mb-1'>{user?.phone}</span>
           </div>
         </div>
       </div>
@@ -317,13 +318,10 @@ const Profile = () => {
         onChangeName={setName}
         onChangeFamilyName={setFamilyName}
         onChangePhone={setPhone}
-        disabled={disabled}
         loading={loading}
         errorName={errorName}
         helperTextName={errorName ? 'seu nome deve ter no mínimo 2 caracteres!' : ''}
-        profilePicture={profileUrl}
-        onSubmitFile={handleSubmitImageProfile}
-        deleteProfilePic={handleProfilePicDelete}
+        deleteProfilePic={handleAvatarDelete}
       />
     </div>
   );

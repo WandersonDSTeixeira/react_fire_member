@@ -1,15 +1,18 @@
 import { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth, firestore } from '../../firebase';
+import { auth, firestore, storage } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { FirebaseError } from 'firebase/app';
 import SignupInput from '../../components/SignupInput';
 import { setDoc, doc } from 'firebase/firestore';
+import { useUserContext } from '../../contexts/User';
+import { getDownloadURL, ref } from 'firebase/storage';
 
 const Signup = () => {
     const navigate = useNavigate();
+    const { setUser } = useUserContext();
 
     const [name, setName] = useState('');
     const [familyName, setFamilyName] = useState('');
@@ -49,13 +52,15 @@ const Signup = () => {
             return;
         }
 
-        await createUser();
-    }
-
-    const createUser = async () => {
         try {
             const cred = await createUserWithEmailAndPassword(auth, email, password);
-            await setDoc(doc(firestore, 'users', cred.user.uid), { name, familyName, phone, email });
+            const id = cred.user.uid;
+            const defaultAvatarRef = ref(storage, 'profile-images/defaultAvatar.png');
+            const avatarUrl = await getDownloadURL(defaultAvatarRef);
+            const defaultCoverRef = ref(storage, 'cover-images/defaultCover.jpeg');
+            const coverUrl = await getDownloadURL(defaultCoverRef);
+            await setDoc(doc(firestore, 'users', id), { id, name, familyName, phone, email, avatarUrl, coverUrl });
+            setUser({ id, name, familyName, phone, email, avatarUrl, coverUrl });
             setDisabled(false);
             setLoading(false);
             navigate('/contents');

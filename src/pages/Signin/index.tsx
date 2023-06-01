@@ -1,13 +1,16 @@
 import { ChangeEvent, useState } from 'react';
-import { auth } from '../../firebase';
+import { auth, firestore } from '../../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { Button, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { FirebaseError } from 'firebase/app';
+import { useUserContext } from '../../contexts/User';
+import { doc, getDoc } from 'firebase/firestore';
 
 const Signin = () => {
     const navigate = useNavigate();
+    const { setUser } = useUserContext();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -23,12 +26,21 @@ const Signin = () => {
         setErrorEmail(false);
         setErrorPassword(false);
         
-        await loginWithEmailAndPassword();
-    }
-
-    const loginWithEmailAndPassword = async () => {
         try {
             const cred = await signInWithEmailAndPassword(auth, email, password);
+            const id = cred.user.uid;
+            const userRef = doc(firestore, 'users', id);
+            const userDoc = await getDoc(userRef);
+            const userData = userDoc.data();
+            setUser({
+                id,
+                name: userData?.name,
+                familyName: userData?.familyName,
+                phone: userData?.phone,
+                email: userData?.email,
+                avatarUrl: userData?.avatarUrl,
+                coverUrl: userData?.coverUrl
+            })
             setDisabled(false);
             setLoading(false);
             navigate('/contents');

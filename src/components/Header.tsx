@@ -10,9 +10,8 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { plataformName } from '../environment';
-import { auth, firestore, storage } from '../firebase';
+import { auth, firestore } from '../firebase';
 import { getDoc, doc } from 'firebase/firestore';
-import { getDownloadURL, listAll, ref } from 'firebase/storage';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -20,7 +19,7 @@ const Header = () => {
   const [focused, setFocused] = useState(false);
   const [open, setOpen] = useState(false);
   const [userName, setUserName] = useState('');
-  const [profilePicture, setProfilePicture] = useState('firstLetter');
+  const [avatarUrl, setAvatarUrl] = useState('firstLetter');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -29,16 +28,7 @@ const Header = () => {
         const userDoc = await getDoc(userRef);
         const userData = userDoc.data();
         setUserName(userData?.name);
-
-        const profilePicRef = ref(storage, 'profile-images/');
-        const profilePics = await listAll(profilePicRef);
-
-        for (let i in profilePics.items) {
-          if (profilePics.items[i].name.includes(`profile${userData?.name}${user.uid}`)) {
-            const url = await getDownloadURL(profilePics.items[i]);
-            setProfilePicture(url);
-          }
-        }
+        if (userData?.avatarUrl) setAvatarUrl(userData?.avatarUrl);
       }
     });
 
@@ -114,7 +104,7 @@ const Header = () => {
           color='secondary'
           sx={{ mr: 1, px: 2, py: 1.5, fontSize: '14px', fontWeight: 'bold', borderRadius: 2, '&:hover': { backgroundColor: '#333'} }}
           onClick={()=>setOpen(true)}
-          endIcon={<Avatar sx={{ color: '#000', backgroundColor: "#777" }} alt={userName} src={profilePicture} />}
+          endIcon={<Avatar sx={{ color: '#000', backgroundColor: "#777" }} alt={userName} src={avatarUrl} />}
         >{userName}</Button>        
         <Menu
           open={open}
