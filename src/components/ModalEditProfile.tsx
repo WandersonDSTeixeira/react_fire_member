@@ -7,64 +7,99 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import SendIcon from '@mui/icons-material/Send';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
-import { CircularProgress } from '@mui/material';
 import { firestore, storage } from '../firebase';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { doc, updateDoc } from 'firebase/firestore';
 import { useUserContext } from '../contexts/User';
 
 type Props = {
-  open: boolean;
-  onClose: (newValue: boolean) => void;
-  onSubmit: (e: React.ChangeEvent<HTMLFormElement>) => void;
-  valueName: string;
-  valueFamilyName: string;
-  valuePhone: string;
-  onChangeName: (newValue: string) => void;
-  onChangeFamilyName: (newValue: string) => void;
-  onChangePhone: (newValue: string) => void;
-  loading: boolean;
-  errorName: boolean;
-  helperTextName: string;
-  deleteProfilePic: () => void;
+  openEditProfile: boolean;
+  setOpenEditProfile: (newValue: boolean) => void;
+  name: string;
+  familyName: string;
+  phone: string;
+  setName: (newValue: string) => void;
+  setFamilyName: (newValue: string) => void;
+  setPhone: (newValue: string) => void;
+  showDeleteAvatarButton: boolean;
 }
 
 const ModalEditProfile = (props: Props) => {
-  const { user, setUser } = useUserContext();
+  const { user, refreshUser, setRefreshUser } = useUserContext();
   
   const [showInputFile, setShowInputFile] = useState(false);
-  const [loadingAvatar, setLoadingAvatar] = useState(false);
   const [disabled, setDisabled] = useState(false);
-  const [showDeleteAvatarButton, setShowDeleteAvatarButton] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorName, setErrorName] = useState(false);
+
+  const handleSubmitProfileData = async (e: React.ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();    
+    setLoading(true);
+    setDisabled(true);
+    setErrorName(false);
+
+    if (props.name.length < 2) {
+      setErrorName(true);
+      setDisabled(false);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const userRef = doc(firestore, 'users', user?.id as string)
+      await updateDoc(userRef, { name: props.name, familyName: props.familyName, phone: props.phone });
+      setRefreshUser(!refreshUser);
+      props.setOpenEditProfile(false);
+      setDisabled(false);
+      setLoading(false);
+    } catch(error) {
+        console.log(error)
+      }
+      setDisabled(false);
+      setLoading(false);
+  }
 
   const handleSubmitAvatar = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoadingAvatar(true);
     setDisabled(true);
     const formData = new FormData(e.currentTarget);
     const file = formData.get('image') as File;
 
     if (file && file.size > 0) {
       if (['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
-        const newFile = ref(storage, `profile-images/avatar${user?.name}${user?.id}`);
+        const newFile = ref(storage, `avatars/avatar${user?.id}`);
         const upload = await uploadBytes(newFile, file);
         const avatarUrl = await getDownloadURL(upload.ref);
-        setUser({ ...user, avatarUrl });
+
         const userRef = doc(firestore, 'users', user?.id as string);
         await updateDoc(userRef, { avatarUrl });
+        setRefreshUser(!refreshUser);
       } else {
         alert('O arquivo precisa ser uma imagem jpeg, jpg ou png!');
       }
     }
     setDisabled(false);
-    setLoadingAvatar(false);
-    setShowDeleteAvatarButton(true);
+    props.setOpenEditProfile(false);
+  }
+
+  const handleAvatarDelete = async () => {
+    setDisabled(true);
+    const avatarRef = ref(storage, `avatars/avatar${user?.id}`);
+    await deleteObject(avatarRef);
+
+    const defaultAvatarRef = ref(storage, 'avatars/defaultAvatar.png');
+    const avatarUrl = await getDownloadURL(defaultAvatarRef);
+    const userRef = doc(firestore, 'users', user?.id as string);
+    await updateDoc(userRef, { avatarUrl });
+
+    setRefreshUser(!refreshUser);
+    setDisabled(false);
   }
 
   return (
     <Dialog
-      open={props.open}
-      onClose={()=>props.onClose(false)}
+      open={props.openEditProfile}
+      onClose={()=>props.setOpenEditProfile(false)}
       PaperProps={{ sx: { borderRadius: 2, maxWidth: 450 } }}
       fullWidth
       className='h-fit'
@@ -87,14 +122,7 @@ const ModalEditProfile = (props: Props) => {
                 </IconButton>
               }
             >
-              {loadingAvatar &&
-                <div className='h-full flex justify-center items-center bg-[#666]'>
-                  <CircularProgress color='secondary' />
-                </div>
-              }
-              {!loadingAvatar &&
-                <Avatar sx={{ color: '#666', width: 150, height: 150 }} alt='' src={user?.avatarUrl} />
-              }
+              <Avatar sx={{ color: '#666', width: 150, height: 150 }} alt='' src={user?.avatarUrl} />
             </Badge>
             {showInputFile &&
               <div>
@@ -108,12 +136,12 @@ const ModalEditProfile = (props: Props) => {
                   >
                     <SendIcon />
                   </IconButton>
-                  {showDeleteAvatarButton &&
+                  {props.showDeleteAvatarButton &&
                     <IconButton
                       color='secondary'
                       disabled={disabled}
                       sx={{ ml: 1, backgroundColor: '#EF8700', '&:hover': { backgroundColor: '#A75E00' } }}
-                      onClick={props.deleteProfilePic}
+                      onClick={handleAvatarDelete}
                     >
                       <DeleteIcon sx={{ fontSize: '26px' }} />
                     </IconButton>
@@ -125,30 +153,30 @@ const ModalEditProfile = (props: Props) => {
         </DialogContent>
       </div>
       <div className='h-fit px-5 pt-5 bg-[#292524]'>
-        <form onSubmit={props.onSubmit} className='mt-2'>
+        <form onSubmit={handleSubmitProfileData} className='mt-2'>
           <div className='flex items-center mb-2'>
             <AccountCircleIcon sx={{ color: '#FFF', mr: 2 }} />
             <ProfileInput
               type='text'
               label='Primeiro nome'
-              value={props.valueName}
-              onChange={props.onChangeName}
+              value={props.name}
+              onChange={props.setName}
               disabled={disabled}
               required
               autoFocus
               InputLabelProps={{
                 shrink: true
               }}
-              error={props.errorName}
-              helperText={props.helperTextName}
+              error={errorName}
+              helperText={errorName ? 'seu nome deve ter no mínimo 2 caracteres!' : ''}
             />
           </div>
           <div className='ml-10 mb-2'>
             <ProfileInput
               type='text'
               label='Sobrenome'
-              value={props.valueFamilyName}
-              onChange={props.onChangeFamilyName}
+              value={props.familyName}
+              onChange={props.setFamilyName}
               disabled={disabled}
               InputLabelProps={{
                 shrink: true
@@ -160,8 +188,8 @@ const ModalEditProfile = (props: Props) => {
             <ProfileInput
               type='tel'
               label='Número de telefone'
-              value={props.valuePhone}
-              onChange={props.onChangePhone}
+              value={props.phone}
+              onChange={props.setPhone}
               disabled={disabled}
               InputLabelProps={{
                 shrink: true
@@ -172,7 +200,7 @@ const ModalEditProfile = (props: Props) => {
             <LoadingButton
               type='submit'
               variant='contained'
-              loading={props.loading}
+              loading={loading}
               loadingPosition='center'
               loadingIndicator=''
               disabled={disabled}

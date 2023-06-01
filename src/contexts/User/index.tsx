@@ -5,7 +5,8 @@ import { ContextType, DataType, ProviderType } from "./types";
 export { useUserContext } from './hook';
 
 const initialState: DataType = {
-    user: null
+    user: null,
+    refreshUser: false,
 }
 
 export const UserContext = createContext<ContextType>({

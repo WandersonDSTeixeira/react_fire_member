@@ -13,6 +13,12 @@ export const useUserContext = () => {
                 type: Actions.SET_USER,
                 payload: { user }
             });
-        }
+        },
+        setRefreshUser: (refreshUser: boolean) => {
+            dispatch({
+                type: Actions.SET_REFRESH_USER,
+                payload: { refreshUser }
+            });
+        }, 
     }
 }

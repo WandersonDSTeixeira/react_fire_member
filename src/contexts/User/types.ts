@@ -3,6 +3,7 @@ import { User } from "../../types/User";
 
 export type DataType = {
     user: User | null;
+    refreshUser: boolean;
 }
 
 export type ActionType = {
@@ -20,5 +21,6 @@ export type ProviderType = {
 }
 
 export enum Actions {
-    SET_USER
+    SET_USER,
+    SET_REFRESH_USER
 }

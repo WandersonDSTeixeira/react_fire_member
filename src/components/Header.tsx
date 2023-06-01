@@ -12,14 +12,14 @@ import { useNavigate } from 'react-router-dom';
 import { plataformName } from '../environment';
 import { auth, firestore } from '../firebase';
 import { getDoc, doc } from 'firebase/firestore';
+import { useUserContext } from '../contexts/User';
 
 const Header = () => {
   const navigate = useNavigate();
+  const { user, setUser, refreshUser } = useUserContext();
 
   const [focused, setFocused] = useState(false);
   const [open, setOpen] = useState(false);
-  const [userName, setUserName] = useState('');
-  const [avatarUrl, setAvatarUrl] = useState('firstLetter');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -27,22 +27,29 @@ const Header = () => {
         const userRef = doc(firestore, 'users', user.uid);
         const userDoc = await getDoc(userRef);
         const userData = userDoc.data();
-        setUserName(userData?.name);
-        if (userData?.avatarUrl) setAvatarUrl(userData?.avatarUrl);
+        setUser({
+          id: userData?.id,
+          name: userData?.name,
+          familyName: userData?.familyName,
+          phone: userData?.phone,
+          email: userData?.email,
+          avatarUrl: userData?.avatarUrl,
+          coverUrl: userData?.coverUrl
+        });
       }
     });
 
-    return () => unsubscribe()
-  }, []);
+      return () => unsubscribe()
+  }, [refreshUser]);
 
-    const handleLogout = async () => {
-      try {
-        await signOut(auth);
-        navigate('/signin');
-      } catch(error) {
-        console.log(error);
-      }
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate('/signin');
+    } catch(error) {
+      console.log(error);
     }
+  }
 
   return (
     <div className='z-20 mx-auto h-36 md:h-20 w-full flex flex-col md:flex-row items-center border-b-2 border-stone-950 p-3 fixed top-0 bg-stone-800'>
@@ -104,8 +111,8 @@ const Header = () => {
           color='secondary'
           sx={{ mr: 1, px: 2, py: 1.5, fontSize: '14px', fontWeight: 'bold', borderRadius: 2, '&:hover': { backgroundColor: '#333'} }}
           onClick={()=>setOpen(true)}
-          endIcon={<Avatar sx={{ color: '#000', backgroundColor: "#777" }} alt={userName} src={avatarUrl} />}
-        >{userName}</Button>        
+          endIcon={<Avatar sx={{ color: '#000', backgroundColor: "#777" }} alt={user?.name} src={user?.avatarUrl} />}
+        >{user?.name}</Button>        
         <Menu
           open={open}
           onClose={()=>setOpen(false)}
