@@ -1,9 +1,10 @@
 import { Dispatch, ReactNode } from "react";
-import { User } from "../../types/User";
+import { User } from "../types/User";
 
 export type DataType = {
     user: User | null;
     refreshUser: boolean;
+    darkMode: boolean;
 }
 
 export type ActionType = {
@@ -22,5 +23,6 @@ export type ProviderType = {
 
 export enum Actions {
     SET_USER,
-    SET_REFRESH_USER
+    SET_REFRESH_USER,
+    SET_DARK_MODE
 }

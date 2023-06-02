@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { firestore, storage } from '../firebase';
 import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { doc, updateDoc } from 'firebase/firestore';
-import { useUserContext } from '../contexts/User';
+import { useAppContext } from '../context';
 
 type Props = {
   openEditProfile: boolean;
@@ -25,7 +25,7 @@ type Props = {
 }
 
 const ModalEditProfile = (props: Props) => {
-  const { user, refreshUser, setRefreshUser } = useUserContext();
+  const { user, refreshUser, setRefreshUser, darkMode } = useAppContext();
   
   const [showInputFile, setShowInputFile] = useState(false);
   const [disabled, setDisabled] = useState(false);
@@ -104,7 +104,7 @@ const ModalEditProfile = (props: Props) => {
       fullWidth
       className='h-fit'
     >
-      <div className='h-2/5 px-1 pt-1 flex flex-col bg-FireMember'>
+      <div className='h-2/5 px-1 pt-1 flex flex-col bg-orange'>
         <DialogTitle sx={{ fontWeight: 'bold', color: '#FFF' }}>Editar Perfil</DialogTitle>
         <DialogContent>
           <div className='flex flex-col justify-center items-center'>
@@ -114,8 +114,7 @@ const ModalEditProfile = (props: Props) => {
               badgeContent={
                 <IconButton
                   type='submit'
-                  color='secondary'
-                  sx={{ backgroundColor: '#EF8700', '&:hover': { backgroundColor: '#A75E00' } }}
+                  sx={{ color: '#FFF', boxShadow: 2, backgroundColor: 'info.main', '&:hover': { backgroundColor: '#A75E00' } }}
                   onClick={()=>setShowInputFile(!showInputFile)}
                 >
                   <EditIcon />
@@ -130,17 +129,15 @@ const ModalEditProfile = (props: Props) => {
                   <input type='file' name='image' className='w-44 sm:w-80' />
                   <IconButton
                     type='submit'
-                    color='secondary'
                     disabled={disabled}
-                    sx={{ ml: 1, backgroundColor: '#EF8700', '&:hover': { backgroundColor: '#A75E00' } }}
+                    sx={{ color: '#FFF', boxShadow: 2, ml: 1, backgroundColor: 'info.main', '&:hover': { backgroundColor: '#A75E00' } }}
                   >
                     <SendIcon />
                   </IconButton>
                   {props.showDeleteAvatarButton &&
                     <IconButton
-                      color='secondary'
                       disabled={disabled}
-                      sx={{ ml: 1, backgroundColor: '#EF8700', '&:hover': { backgroundColor: '#A75E00' } }}
+                      sx={{ color: '#FFF', boxShadow: 2, ml: 1, backgroundColor: 'info.main', '&:hover': { backgroundColor: '#A75E00' } }}
                       onClick={handleAvatarDelete}
                     >
                       <DeleteIcon sx={{ fontSize: '26px' }} />
@@ -152,64 +149,66 @@ const ModalEditProfile = (props: Props) => {
           </div>
         </DialogContent>
       </div>
-      <div className='h-fit px-5 pt-5 bg-[#292524]'>
-        <form onSubmit={handleSubmitProfileData} className='mt-2'>
-          <div className='flex items-center mb-2'>
-            <AccountCircleIcon sx={{ color: '#FFF', mr: 2 }} />
-            <ProfileInput
-              type='text'
-              label='Primeiro nome'
-              value={props.name}
-              onChange={props.setName}
-              disabled={disabled}
-              required
-              autoFocus
-              InputLabelProps={{
-                shrink: true
-              }}
-              error={errorName}
-              helperText={errorName ? 'seu nome deve ter no mínimo 2 caracteres!' : ''}
-            />
-          </div>
-          <div className='ml-10 mb-2'>
-            <ProfileInput
-              type='text'
-              label='Sobrenome'
-              value={props.familyName}
-              onChange={props.setFamilyName}
-              disabled={disabled}
-              InputLabelProps={{
-                shrink: true
-              }}
-            />
-          </div>
-          <div className='flex items-center mb-2'>
-            <PhoneIcon sx={{ color: '#FFF', mr: 2 }} />
-            <ProfileInput
-              type='tel'
-              label='Número de telefone'
-              value={props.phone}
-              onChange={props.setPhone}
-              disabled={disabled}
-              InputLabelProps={{
-                shrink: true
-              }}
-            />
-          </div>
-          <DialogActions>
-            <LoadingButton
-              type='submit'
-              variant='contained'
-              loading={loading}
-              loadingPosition='center'
-              loadingIndicator=''
-              disabled={disabled}
-              color='info'
-              sx={{ borderRadius: 2, fontWeight: 'bold', color: '#FFF' }}
-              fullWidth
-            >Salvar</LoadingButton>
-          </DialogActions>
-        </form>
+      <div className={`${ darkMode ? 'dark' : '' }`}>
+        <div className='h-fit px-5 pt-5 bg-white dark:bg-[#292524]'>
+          <form onSubmit={handleSubmitProfileData} className='mt-2'>
+            <div className='flex items-center mb-2'>
+              <AccountCircleIcon sx={{ color: 'secondary.main', mr: 2 }} />
+              <ProfileInput
+                type='text'
+                label='Primeiro nome'
+                value={props.name}
+                onChange={props.setName}
+                disabled={disabled}
+                required
+                autoFocus
+                InputLabelProps={{
+                  shrink: true
+                }}
+                error={errorName}
+                helperText={errorName ? 'seu nome deve ter no mínimo 2 caracteres!' : ''}
+              />
+            </div>
+            <div className='ml-10 mb-2'>
+              <ProfileInput
+                type='text'
+                label='Sobrenome'
+                value={props.familyName}
+                onChange={props.setFamilyName}
+                disabled={disabled}
+                InputLabelProps={{
+                  shrink: true
+                }}
+              />
+            </div>
+            <div className='flex items-center mb-2'>
+              <PhoneIcon sx={{ color: 'secondary.main', mr: 2 }} />
+              <ProfileInput
+                type='tel'
+                label='Número de telefone'
+                value={props.phone}
+                onChange={props.setPhone}
+                disabled={disabled}
+                InputLabelProps={{
+                  shrink: true
+                }}
+              />
+            </div>
+            <DialogActions>
+              <LoadingButton
+                type='submit'
+                variant='contained'
+                loading={loading}
+                loadingPosition='center'
+                loadingIndicator=''
+                disabled={disabled}
+                color='info'
+                sx={{ borderRadius: 2, fontWeight: 'bold', color: '#FFF' }}
+                fullWidth
+              >Salvar</LoadingButton>
+            </DialogActions>
+          </form>
+        </div>
       </div>
     </Dialog>
   );

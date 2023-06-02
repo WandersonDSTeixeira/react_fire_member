@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { User, signOut, updatePassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import { FirebaseError } from 'firebase/app';
+import { useAppContext } from '../context';
 
 type Props = {
   openResetPassword: boolean;
@@ -15,6 +16,7 @@ type Props = {
 
 const ModalResetPassword = (props: Props) => {
   const navigate = useNavigate();
+  const { darkMode } = useAppContext();
 
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
@@ -77,8 +79,8 @@ const ModalResetPassword = (props: Props) => {
       PaperProps={{ sx: { borderRadius: 2, maxWidth: 450 } }}
       fullWidth
     >
-      <div className='h-1/2 px-3 pt-3 flex flex-col items-center bg-FireMember'>
-        <div className='bg-[#666] p-3 rounded-3xl'><VpnKeyIcon color='secondary' /></div>
+      <div className='h-1/2 px-3 pt-3 flex flex-col items-center bg-orange'>
+        <div className='bg-[#666] p-3 rounded-3xl'><VpnKeyIcon sx={{ color: '#FFF' }} /></div>
         <DialogTitle sx={{ fontWeight: 'bold', color: '#FFF' }}>Trocar Senha</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -89,42 +91,44 @@ const ModalResetPassword = (props: Props) => {
           </DialogContentText>
         </DialogContent>
       </div>
-      <div className='h-1/2 px-5 pt-5 bg-[#292524]'>
-        <form onSubmit={handleSubmitPassword}>
-          <ProfileInput
-            type='password'
-            label="Senha nova"
-            value={password}
-            onChange={setPassword}
-            disabled={disabled}
-            required
-            error={errorPassword}
-            helperText={passwordHelperText()}
-          />
-          <ProfileInput
-            type='password'
-            label="Confirme a senha"
-            value={confirmPassword}
-            onChange={setConfirmPassword}
-            disabled={disabled}
-            required
-            error={errorConfirmPassword}
-            helperText={errorConfirmPassword ? 'as senhas não batem!' : '' }
-          />
-          <DialogActions>
-            <LoadingButton
-              type='submit'
-              variant='contained'
-              loading={loading}
-              loadingPosition='center'
-              loadingIndicator=''
+      <div className={`${ darkMode ? 'dark' : '' }`}>
+        <div className='h-1/2 px-5 pt-5 bg-white dark:bg-[#292524]'>
+          <form onSubmit={handleSubmitPassword}>
+            <ProfileInput
+              type='password'
+              label="Senha nova"
+              value={password}
+              onChange={setPassword}
               disabled={disabled}
-              color='info'
-              sx={{ borderRadius: 2, fontWeight: 'bold', color: '#FFF' }}
-              fullWidth
-            >Salvar</LoadingButton>
-          </DialogActions>
-        </form>
+              required
+              error={errorPassword}
+              helperText={passwordHelperText()}
+            />
+            <ProfileInput
+              type='password'
+              label="Confirme a senha"
+              value={confirmPassword}
+              onChange={setConfirmPassword}
+              disabled={disabled}
+              required
+              error={errorConfirmPassword}
+              helperText={errorConfirmPassword ? 'as senhas não batem!' : '' }
+            />
+            <DialogActions>
+              <LoadingButton
+                type='submit'
+                variant='contained'
+                loading={loading}
+                loadingPosition='center'
+                loadingIndicator=''
+                disabled={disabled}
+                color='info'
+                sx={{ borderRadius: 2, fontWeight: 'bold', color: '#FFF' }}
+                fullWidth
+              >Salvar</LoadingButton>
+            </DialogActions>
+          </form>
+        </div>
       </div>
     </Dialog>
   );

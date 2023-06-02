@@ -2,14 +2,15 @@ import { createContext, useReducer } from "react";
 import { reducer } from "./reducer";
 import { ContextType, DataType, ProviderType } from "./types";
 
-export { useUserContext } from './hook';
+export { useAppContext } from './hook';
 
 const initialState: DataType = {
     user: null,
     refreshUser: false,
+    darkMode: true
 }
 
-export const UserContext = createContext<ContextType>({
+export const AppContext = createContext<ContextType>({
     state: initialState,
     dispatch: () => {}
 })
@@ -20,8 +21,8 @@ export const Provider = ({ children }: ProviderType) => {
     const value = { state, dispatch };
 
     return (
-        <UserContext.Provider value={ value }>
+        <AppContext.Provider value={ value }>
             {children}
-        </UserContext.Provider>
+        </AppContext.Provider>
     )
 }

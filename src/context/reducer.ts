@@ -9,5 +9,8 @@ export const reducer = (state: DataType, action: ActionType) => {
             if (!action.payload.refreshUser) return { ...state, refreshUser: false  };
             return { ...state, refreshUser: action.payload.refreshUser };
         default: return state;
+        case Actions.SET_DARK_MODE:
+            if (!action.payload.darkMode) return { ...state, darkMode: false };
+            return { ...state, darkMode: action.payload.darkMode };
     }
 }

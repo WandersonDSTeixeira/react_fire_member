@@ -7,12 +7,12 @@ import { LoadingButton } from '@mui/lab';
 import { FirebaseError } from 'firebase/app';
 import SignupInput from '../../components/SignupInput';
 import { setDoc, doc } from 'firebase/firestore';
-import { useUserContext } from '../../contexts/User';
+import { useAppContext } from '../../context';
 import { getDownloadURL, ref } from 'firebase/storage';
 
 const Signup = () => {
   const navigate = useNavigate();
-  const { setUser } = useUserContext();
+  const { setUser } = useAppContext();
 
   const [name, setName] = useState('');
   const [familyName, setFamilyName] = useState('');

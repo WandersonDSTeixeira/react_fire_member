@@ -1,10 +1,10 @@
 import { useContext } from "react"
-import { UserContext } from "."
-import { User } from "../../types/User"
+import { AppContext } from "."
+import { User } from "../types/User"
 import { Actions } from "./types"
 
-export const useUserContext = () => {
-    const { state, dispatch } = useContext(UserContext)
+export const useAppContext = () => {
+    const { state, dispatch } = useContext(AppContext);
 
     return {
         ...state,
@@ -19,6 +19,12 @@ export const useUserContext = () => {
                 type: Actions.SET_REFRESH_USER,
                 payload: { refreshUser }
             });
-        }, 
+        },
+        setDarkMode: (darkMode: boolean) => {
+            dispatch({
+                type: Actions.SET_DARK_MODE,
+                payload: { darkMode }
+            });
+        }
     }
 }

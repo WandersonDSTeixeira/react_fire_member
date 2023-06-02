@@ -10,10 +10,10 @@ import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage
 import SendIcon from '@mui/icons-material/Send';
 import { CircularProgress } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useUserContext } from '../../contexts/User';
+import { useAppContext } from '../../context';
 
 const Profile = () => {
-  const { user, setUser, refreshUser, setRefreshUser } = useUserContext();
+  const { user, setUser, refreshUser, setRefreshUser } = useAppContext();
   
   const [openResetPassword, setOpenResetPassword] = useState(false);
   const [openEditProfile, setOpenEditProfile] = useState(false);
@@ -93,12 +93,12 @@ const Profile = () => {
   }
 
   return (
-    <div className='flex flex-col p-5 bg-stone-900 w-full h-screen'>
-      <div className='mt-36 md:mt-24 mx-0 sm:mx-20 md:mx-32 lg:mx-56 xl:mx-72 h-3/4 max-h-[400px] md:max-h-[450px]'>
+    <div className='flex flex-col p-5 bg-[#EEE] dark:bg-stone-900 w-full h-screen'>
+      <div className='mt-36 md:mt-24 mx-0 sm:mx-20 md:mx-32 lg:mx-56 xl:mx-72 h-3/4 max-h-[400px] md:max-h-[450px] rounded shadow-md'>
         <div className='flex flex-col h-3/5 rounded-lg rounded-b-none'>
           {loadingCover &&
             <div className='h-full flex justify-center items-center bg-[#666]'>
-              <CircularProgress color='secondary' />
+              <CircularProgress sx={{ color: '#FFF'}} />
             </div>
           }
           {!loadingCover &&
@@ -118,8 +118,7 @@ const Profile = () => {
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
               badgeContent={
                 <IconButton
-                  color='secondary'
-                  sx={{ backgroundColor: '#EF8700', '&:hover': { backgroundColor: '#A75E00' } }}
+                  sx={{ color: '#FFF', backgroundColor: '#EF8700', '&:hover': { backgroundColor: '#A75E00' } }}
                   onClick={()=>setOpenEditProfile(true)}
                 >
                   <EditIcon />
@@ -131,7 +130,7 @@ const Profile = () => {
           </div>
         </div>
         {showFileInput &&
-          <div className='flex justify-end pr-5 py-1 border'>
+          <div className='flex justify-end pr-5 py-1 border border-[#777] dark:border-white bg-white dark:bg-[#292524]'>
             <form method='POST' onSubmit={handleSubmitCover}>
               <input type='file' name='image' className='w-56 sm:w-48 md:w-56 lg:w-72 xl:w-80' />
               <IconButton
@@ -153,25 +152,25 @@ const Profile = () => {
             </form>
           </div>
         }
-        <div className='p-3 bg-[#292524] h-2/5 rounded-lg rounded-t-none flex flex-col justify-between'>
+        <div className='p-3 bg-white dark:bg-[#292524] h-2/5 rounded-lg rounded-t-none flex flex-col justify-between'>
           <div className='flex justify-center sm:justify-end'>
             <Button
-                variant='contained'
-                color='info'
-                sx={{ borderRadius: 2, color: '#FFF', fontWeight: 'bold' }}
-                onClick={()=>setOpenResetPassword(true)}
-              >Trocar Senha</Button>
-              <Button
-                variant='contained'
-                color='info'
-                sx={{ borderRadius: 2, color: '#FFF', fontWeight: 'bold', ml: 2 }}
-                onClick={()=>setOpenEditProfile(true)}
-              >Editar Perfil</Button>
+              variant='contained'
+              color='info'
+              sx={{ borderRadius: 2, color: '#FFF', fontWeight: 'bold' }}
+              onClick={()=>setOpenResetPassword(true)}
+            >Trocar Senha</Button>
+            <Button
+              variant='contained'
+              color='info'
+              sx={{ borderRadius: 2, color: '#FFF', fontWeight: 'bold', ml: 2 }}
+              onClick={()=>setOpenEditProfile(true)}
+            >Editar Perfil</Button>
           </div>
           <div className='flex items-center sm:items-start flex-col justify-end'>
-            <span className='text-white text-2xl mb-1 text-center mt-1 sm:mt-0 truncate max-w-[320px] sm:max-w-full'>{ user ? (`${user?.name} ${user?.familyName}`) : 'Nome Completo' }</span>
-            <span className='text-white mb-1'>{ user ? (`${user?.email}`) : 'Email' }</span>
-            <span className='text-white text-sm mb-1'>{ user ? (`${user?.phone}`) : 'Email' }</span>
+            <span className='text-black dark:text-white text-2xl mb-1 text-center mt-1 sm:mt-0 truncate max-w-[320px] sm:max-w-full'>{ user ? (`${user?.name} ${user?.familyName}`) : 'Nome Completo' }</span>
+            <span className='text-black dark:text-white mb-1'>{ user ? (`${user?.email}`) : 'Email' }</span>
+            <span className='text-black dark:text-white text-sm mb-1'>{ user ? (`${user?.phone}`) : 'Telefone' }</span>
           </div>
         </div>
       </div>

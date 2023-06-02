@@ -5,12 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import { Button, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { FirebaseError } from 'firebase/app';
-import { useUserContext } from '../../contexts/User';
+import { useAppContext } from '../../context';
 import { doc, getDoc } from 'firebase/firestore';
 
 const Signin = () => {
 		const navigate = useNavigate();
-		const { setUser } = useUserContext();
+		const { setUser } = useAppContext();
 
 		const [email, setEmail] = useState('');
 		const [password, setPassword] = useState('');

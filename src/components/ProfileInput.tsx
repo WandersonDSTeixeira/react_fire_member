@@ -1,4 +1,5 @@
 import { TextField } from '@mui/material';
+import { useAppContext } from '../context';
 
 type Props = {
   type: string;
@@ -16,6 +17,7 @@ type Props = {
 }
 
 const ProfileInput = (props: Props) => {
+  const { darkMode } = useAppContext();
 
   return (
     <TextField
@@ -32,12 +34,12 @@ const ProfileInput = (props: Props) => {
       sx={{
         mb: 2,
         '& .MuiInputLabel-root': {
-          color: '#FFF',
+          color: 'secondary.main',
           fontSize: '12px'
         },
         '&:hover .MuiOutlinedInput-root': {
           '& fieldset': {
-          borderColor: '#CCC',
+          borderColor: darkMode ? '#CCC' : '#777',
           }
         },
         '& .MuiOutlinedInput-root.Mui-focused': {
