@@ -46,6 +46,9 @@ const Profile = () => {
         setPhone(userData?.phone as string);
         if (ref(storage, `covers/cover${userData?.id}`)) setShowDeleteCoverButton(true);
         if (ref(storage, `avatars/avatar${userData?.id}`)) setShowDeleteAvatarButton(true);
+
+        const coverRef = ref(storage, `covers/cover${userData?.id}`)
+        console.log(coverRef.name)
       }
     });
 
@@ -93,46 +96,48 @@ const Profile = () => {
   }
 
   return (
-    <div className='flex flex-col p-5 bg-[#EEE] dark:bg-stone-900 w-full h-screen'>
-      <div className='mt-36 md:mt-24 mx-0 sm:mx-20 md:mx-32 lg:mx-56 xl:mx-72 h-3/4 max-h-[400px] md:max-h-[450px] rounded shadow-md'>
-        <div className='flex flex-col h-3/5 rounded-lg rounded-b-none'>
+    <div className='flex flex-col p-5 bg-[#EEE] dark:bg-stone-900 w-full h-[700px]'>
+      <div className='mt-36 md:mt-24 mx-0 sm:mx-20 md:mx-32 lg:mx-56 xl:mx-72 h-fit rounded shadow-md'>
+        <div className='flex flex-col h-[260px] rounded-lg rounded-b-none'>
           {loadingCover &&
-            <div className='h-full flex justify-center items-center bg-[#666]'>
+            <div className='h-[260px] flex justify-center items-center bg-[#666] w-full rounded-lg rounded-b-none'>
               <CircularProgress sx={{ color: '#FFF'}} />
             </div>
           }
           {!loadingCover &&
-            <img className='object-cover h-full w-full rounded-lg rounded-b-none' alt='' src={user?.coverUrl} />
+            <img className='object-cover h-[260px] w-full rounded-lg rounded-b-none' alt='' src={user?.coverUrl} />
           }
-          <div className='flex justify-end -mt-56 md:-mt-64 mr-2'>
+          <div className='flex justify-end -mt-60 md:-mt-64 mr-2'>
             <IconButton
               sx={{ color: '#FFF', backgroundColor: '#EF8700', '&:hover': { backgroundColor: '#A75E00' } }}
-              onClick={()=>setShowFileInput(!showFileInput)}
+              onClick={() => setShowFileInput(!showFileInput)}
+              disabled={disabled}
             >
               <EditIcon />
             </IconButton>
           </div>
-          <div className='flex justify-center sm:justify-start mt-6 sm:mt-20 md:mt-32 ml-0 sm:ml-6 z-10'>
-            <Badge
-              overlap='circular'
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              badgeContent={
-                <IconButton
-                  sx={{ color: '#FFF', backgroundColor: '#EF8700', '&:hover': { backgroundColor: '#A75E00' } }}
-                  onClick={()=>setOpenEditProfile(true)}
-                >
-                  <EditIcon />
-                </IconButton>
-              }
-            >
-              <Avatar sx={{ color: '#666', width: 150, height: 150 }} alt='' src={user?.avatarUrl} />
-            </Badge>
-          </div>
+        </div>
+        <div className='flex justify-center h-40 sm:justify-start sm:pl-6 z-10 -mt-40 sm:-mt-24 sm:-mb-16'>
+          <Badge
+            overlap='circular'
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            badgeContent={
+              <IconButton
+                sx={{ color: '#FFF', backgroundColor: '#EF8700', '&:hover': { backgroundColor: '#A75E00' } }}
+                onClick={()=>setOpenEditProfile(true)}
+                disabled={disabled}
+              >
+                <EditIcon />
+              </IconButton>
+            }
+          >
+            <Avatar sx={{ color: '#666', width: 150, height: 150 }} alt='' src={user?.avatarUrl} />
+          </Badge>
         </div>
         {showFileInput &&
-          <div className='flex justify-end pr-5 py-1 border border-[#777] dark:border-white bg-white dark:bg-[#292524]'>
+          <div className='h-[55px] flex justify-center sm:justify-end items-center pr-1 md:pr-5 py-1 border border-[#777] dark:border-white bg-white dark:bg-[#292524]'>
             <form method='POST' onSubmit={handleSubmitCover}>
-              <input type='file' name='image' className='w-56 sm:w-48 md:w-56 lg:w-72 xl:w-80' />
+              <input type='file' name='image' className='w-56 sm:w-40 md:w-44 lg:w-60 xl:w-80' />
               <IconButton
                 type='submit'
                 sx={{ ml: 1, color: '#FFF', backgroundColor: '#EF8700', '&:hover': { backgroundColor: '#A75E00' } }}
@@ -140,29 +145,31 @@ const Profile = () => {
               >
                 <SendIcon />
               </IconButton>
+              {showDeleteCoverButton &&
+                <IconButton
+                  sx={{ ml: 1, color: '#FFF', backgroundColor: '#EF8700', '&:hover': { backgroundColor: '#A75E00' } }}
+                  onClick={handleCoverDelete}
+                  disabled={disabled}
+                >
+                  <DeleteIcon sx={{ fontSize: '26px' }} />
+                </IconButton>
+              }
             </form>
-            {showDeleteCoverButton &&
-              <IconButton
-                sx={{ ml: 1, color: '#FFF', backgroundColor: '#EF8700', '&:hover': { backgroundColor: '#A75E00' } }}
-                onClick={handleCoverDelete}
-                disabled={disabled}
-              >
-                <DeleteIcon sx={{ fontSize: '26px' }} />
-              </IconButton>
-            }
           </div>
         }
-        <div className='p-3 bg-white dark:bg-[#292524] h-2/5 rounded-lg rounded-t-none flex flex-col justify-between'>
+        <div className='p-3 bg-white dark:bg-[#292524] h-[170px] rounded-lg rounded-t-none flex flex-col justify-between'>
           <div className='flex justify-center sm:justify-end'>
             <Button
               variant='contained'
               color='secondary'
+              disabled={disabled}
               sx={{ borderRadius: 2, color: '#FFF', fontWeight: 'bold' }}
               onClick={()=>setOpenResetPassword(true)}
             >Trocar Senha</Button>
             <Button
               variant='contained'
               color='secondary'
+              disabled={disabled}
               sx={{ borderRadius: 2, color: '#FFF', fontWeight: 'bold', ml: 2 }}
               onClick={()=>setOpenEditProfile(true)}
             >Editar Perfil</Button>

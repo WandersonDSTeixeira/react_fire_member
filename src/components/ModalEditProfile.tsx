@@ -79,7 +79,6 @@ const ModalEditProfile = (props: Props) => {
       }
     }
     setDisabled(false);
-    props.setOpenEditProfile(false);
   }
 
   const handleAvatarDelete = async () => {
