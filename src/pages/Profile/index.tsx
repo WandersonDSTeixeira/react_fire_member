@@ -46,9 +46,6 @@ const Profile = () => {
         setPhone(userData?.phone as string);
         if (ref(storage, `covers/cover${userData?.id}`)) setShowDeleteCoverButton(true);
         if (ref(storage, `avatars/avatar${userData?.id}`)) setShowDeleteAvatarButton(true);
-
-        const coverRef = ref(storage, `covers/cover${userData?.id}`)
-        console.log(coverRef.name)
       }
     });
 
