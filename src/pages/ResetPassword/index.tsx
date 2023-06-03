@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
 import { FirebaseError } from 'firebase/app';
 import { LoadingButton } from '@mui/lab';
+import SignupInput from '../../components/SignupInput';
 
 const ResetPassword = () => {
     const navigate = useNavigate();
@@ -49,19 +50,15 @@ const ResetPassword = () => {
                 <div className='text-center'>Digite seu endereço de e-mail.</div>
                 <div className='text-center'>Você receberá um link para criar <br/>uma nova senha via e-mail.</div>
                 <form onSubmit={handleSubmit} className='bg-white mt-4'>
-                    <TextField
-                        id='emailField'
+                    <SignupInput
                         type='email'
                         label="email"
-                        variant="outlined"
                         value={email}
-                        onChange={e => setEmail(e.target.value)}
+                        onChange={setEmail}
                         disabled={disabled}
                         required
                         error={errorEmail}
                         helperText={errorEmail ? 'email inválido!' : ''}
-                        sx={{ mb: 3 }}
-                        fullWidth
                     />
                     <LoadingButton
                         type='submit'
