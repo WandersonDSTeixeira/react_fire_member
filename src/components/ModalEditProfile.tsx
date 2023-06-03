@@ -114,7 +114,7 @@ const ModalEditProfile = (props: Props) => {
               badgeContent={
                 <IconButton
                   type='submit'
-                  sx={{ color: '#FFF', boxShadow: 2, backgroundColor: 'info.main', '&:hover': { backgroundColor: '#A75E00' } }}
+                  sx={{ color: '#FFF', boxShadow: 2, backgroundColor: 'secondary.main', '&:hover': { backgroundColor: '#A75E00' } }}
                   onClick={()=>setShowInputFile(!showInputFile)}
                 >
                   <EditIcon />
@@ -130,14 +130,14 @@ const ModalEditProfile = (props: Props) => {
                   <IconButton
                     type='submit'
                     disabled={disabled}
-                    sx={{ color: '#FFF', boxShadow: 2, ml: 1, backgroundColor: 'info.main', '&:hover': { backgroundColor: '#A75E00' } }}
+                    sx={{ color: '#FFF', boxShadow: 2, ml: 1, backgroundColor: 'secondary.main', '&:hover': { backgroundColor: '#A75E00' } }}
                   >
                     <SendIcon />
                   </IconButton>
                   {props.showDeleteAvatarButton &&
                     <IconButton
                       disabled={disabled}
-                      sx={{ color: '#FFF', boxShadow: 2, ml: 1, backgroundColor: 'info.main', '&:hover': { backgroundColor: '#A75E00' } }}
+                      sx={{ color: '#FFF', boxShadow: 2, ml: 1, backgroundColor: 'secondary.main', '&:hover': { backgroundColor: '#A75E00' } }}
                       onClick={handleAvatarDelete}
                     >
                       <DeleteIcon sx={{ fontSize: '26px' }} />
@@ -153,7 +153,7 @@ const ModalEditProfile = (props: Props) => {
         <div className='h-fit px-5 pt-5 bg-white dark:bg-[#292524]'>
           <form onSubmit={handleSubmitProfileData} className='mt-2'>
             <div className='flex items-center mb-2'>
-              <AccountCircleIcon sx={{ color: 'secondary.main', mr: 2 }} />
+              <AccountCircleIcon sx={{ mr: 2 }} />
               <ProfileInput
                 type='text'
                 label='Primeiro nome'
@@ -182,7 +182,7 @@ const ModalEditProfile = (props: Props) => {
               />
             </div>
             <div className='flex items-center mb-2'>
-              <PhoneIcon sx={{ color: 'secondary.main', mr: 2 }} />
+              <PhoneIcon sx={{ mr: 2 }} />
               <ProfileInput
                 type='tel'
                 label='Número de telefone'
@@ -202,7 +202,7 @@ const ModalEditProfile = (props: Props) => {
                 loadingPosition='center'
                 loadingIndicator=''
                 disabled={disabled}
-                color='info'
+                color='secondary'
                 sx={{ borderRadius: 2, fontWeight: 'bold', color: '#FFF' }}
                 fullWidth
               >Salvar</LoadingButton>

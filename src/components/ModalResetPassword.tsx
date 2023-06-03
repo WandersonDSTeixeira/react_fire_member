@@ -122,7 +122,7 @@ const ModalResetPassword = (props: Props) => {
                 loadingPosition='center'
                 loadingIndicator=''
                 disabled={disabled}
-                color='info'
+                color='secondary'
                 sx={{ borderRadius: 2, fontWeight: 'bold', color: '#FFF' }}
                 fullWidth
               >Salvar</LoadingButton>

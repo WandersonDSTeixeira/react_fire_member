@@ -11,7 +11,6 @@ const Footer = () => {
       <div className='flex-1 flex flex-col items-center md:items-end'>
         <div className='mb-1 md:mb-3 mt-1 md:mt-0'>
           <Button
-            color='secondary'
             size='small'
             sx={{
               fontWeight: 'bold',
@@ -22,7 +21,6 @@ const Footer = () => {
             }}
             onClick={() => { }}>FALE COM A GENTE</Button>
           <Button
-            color='secondary'
             size='small'
             sx={{
               fontWeight: 'bold',
@@ -33,7 +31,6 @@ const Footer = () => {
             }}
             onClick={() => { }}>PRIVACIDADE</Button>
           <Button
-            color='secondary'
             size='small'
             sx={{
               fontWeight: 'bold',

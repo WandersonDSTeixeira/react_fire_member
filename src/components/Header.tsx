@@ -43,6 +43,11 @@ const Header = () => {
       return () => unsubscribe()
   }, [refreshUser]);
 
+  const handleDarkMode = () => {
+    setDarkMode(!darkMode)
+    localStorage.setItem('theme', (darkMode ? 'false' : 'true'));
+  }
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -57,7 +62,7 @@ const Header = () => {
       <div className='flex w-full items-center'>
         <div className='w-2/5 md:w-3/5 ml-5 sm:ml-10'>
           <Button
-            color='info'
+            color='secondary'
             onClick={() => navigate('/contents')}
             sx={{ fontSize: '24px', '&:hover': { backgroundColor: darkMode ? '#292524' : '#FFF' } }}
           >{plataformName}</Button>
@@ -76,11 +81,11 @@ const Header = () => {
                   backgroundColor: (darkMode ? '#111' : '#EEE')
                 }
               }}
-              color='info'
+              color='secondary'
               placeholder='Buscar'
               endAdornment={
                 <InputAdornment position="end">
-                  <SearchIcon sx={{ color: 'secondary.main' }} />
+                  <SearchIcon />
                 </InputAdornment>
               }
             />
@@ -91,53 +96,52 @@ const Header = () => {
         <div className='flex flex-row'>
           <Tooltip title='Tamanho da fonte' disableInteractive>
             <IconButton sx={{ ml: 3, '&:hover': { backgroundColor: (darkMode ? '#333' : '#EEE') } }}>
-              <FormatSizeIcon color='secondary' />
+              <FormatSizeIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title='Alternar para tela cheia' disableInteractive>
             <IconButton sx={{ '&:hover': { backgroundColor: (darkMode ? '#333' : '#EEE') } }}>
-              <FullscreenIcon color='secondary' />
+              <FullscreenIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title='Alternar escuro/claro' disableInteractive>
-            <IconButton sx={{ '&:hover': { backgroundColor: (darkMode ? '#333' : '#EEE') } }} onClick={() => setDarkMode(!darkMode)}>
+            <IconButton sx={{ '&:hover': { backgroundColor: (darkMode ? '#333' : '#EEE') } }} onClick={handleDarkMode}>
               {darkMode &&
-                <Brightness7Icon color='secondary' />
+                <Brightness7Icon />
               }
               {!darkMode &&
-                <Brightness4Icon color='secondary' />
+                <Brightness4Icon />
               }
             </IconButton>
           </Tooltip>
           <Tooltip title='Notificações' disableInteractive>
             <IconButton sx={{ '&:hover': { backgroundColor: (darkMode ? '#333' : '#EEE') } }}>
-              <NotificationsIcon color='secondary' />
+              <NotificationsIcon />
             </IconButton>
           </Tooltip>
         </div>
         <Button
           variant='text'
           size='small'
-          color='secondary'
           sx={{ mr: 1, px: 2, py: 1.5, fontSize: '14px', fontWeight: 'bold', borderRadius: 2, '&:hover': { backgroundColor: (darkMode ? '#333' : '#EEE')} }}
           onClick={()=>setOpen(true)}
-          endIcon={<Avatar sx={{ color: (darkMode ? '#000' : '#FFF'), backgroundColor: (darkMode ? '#777' : '#AAA') }} alt={user?.name} src={user?.avatarUrl} />}
+          endIcon={<Avatar sx={{ backgroundColor: (darkMode ? '#777' : '#AAA') }} alt={user?.name} src={user?.avatarUrl} />}
         >{user?.name}</Button>        
         <Menu
           open={open}
           onClose={()=>setOpen(false)}
           onClick={()=>setOpen(false)}
-          PaperProps={{ sx: { borderRadius: 2, backgroundColor: (darkMode ? '#292524' : '#EEE'), color: 'secondary.main' } }}
+          PaperProps={{ sx: { borderRadius: 2, backgroundColor: (darkMode ? '#292524' : '#EEE'), color: 'primary.main' } }}
           anchorReference='anchorPosition'
           anchorPosition={{ top: 70, left: 1250 }}
         >
-          <MenuItem onClick={()=>navigate('/profile')} sx={{ '&:hover': { backgroundColor: (darkMode ? '#333' : '#DDD') } }}>
-            <ListItemIcon sx={{ color: 'secondary.main', fontSize: '14px' }}>
+          <MenuItem onClick={()=>navigate('/profile')} sx={{ '&:hover': { backgroundColor: (darkMode ? '#333' : '#CCC') } }}>
+            <ListItemIcon sx={{ fontSize: '14px' }}>
               <AccountCircleIcon /><span className='ml-2'>Meu Perfil</span>
             </ListItemIcon>
           </MenuItem>
-          <MenuItem onClick={handleLogout} sx={{ '&:hover': { backgroundColor: (darkMode ? '#333' : '#DDD') } }}>
-            <ListItemIcon sx={{ color: 'secondary.main', fontSize: '14px' }}>
+          <MenuItem onClick={handleLogout} sx={{ '&:hover': { backgroundColor: (darkMode ? '#333' : '#CCC') } }}>
+            <ListItemIcon sx={{ fontSize: '14px' }}>
               <ExitToAppIcon /><span className='ml-2'>Sair</span>
             </ListItemIcon>
           </MenuItem>

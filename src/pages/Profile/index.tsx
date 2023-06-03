@@ -45,7 +45,7 @@ const Profile = () => {
         setFamilyName(userData?.familyName as string);
         setPhone(userData?.phone as string);
         if (ref(storage, `covers/cover${userData?.id}`)) setShowDeleteCoverButton(true);
-        if (ref(storage, `covers/avatar${userData?.id}`)) setShowDeleteAvatarButton(true);
+        if (ref(storage, `avatars/avatar${userData?.id}`)) setShowDeleteAvatarButton(true);
       }
     });
 
@@ -112,7 +112,7 @@ const Profile = () => {
               <EditIcon />
             </IconButton>
           </div>
-          <div className='mt-16 sm:mt-36 md:mt-44 ml-6 z-10 absolute'>
+          <div className='flex justify-center sm:justify-start mt-6 sm:mt-20 md:mt-32 ml-0 sm:ml-6 z-10'>
             <Badge
               overlap='circular'
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -140,29 +140,29 @@ const Profile = () => {
               >
                 <SendIcon />
               </IconButton>
-              {showDeleteCoverButton &&
-                <IconButton
-                  sx={{ ml: 1, color: '#FFF', backgroundColor: '#EF8700', '&:hover': { backgroundColor: '#A75E00' } }}
-                  onClick={handleCoverDelete}
-                  disabled={disabled}
-                >
-                  <DeleteIcon sx={{ fontSize: '26px' }} />
-                </IconButton>
-              }
             </form>
+            {showDeleteCoverButton &&
+              <IconButton
+                sx={{ ml: 1, color: '#FFF', backgroundColor: '#EF8700', '&:hover': { backgroundColor: '#A75E00' } }}
+                onClick={handleCoverDelete}
+                disabled={disabled}
+              >
+                <DeleteIcon sx={{ fontSize: '26px' }} />
+              </IconButton>
+            }
           </div>
         }
         <div className='p-3 bg-white dark:bg-[#292524] h-2/5 rounded-lg rounded-t-none flex flex-col justify-between'>
           <div className='flex justify-center sm:justify-end'>
             <Button
               variant='contained'
-              color='info'
+              color='secondary'
               sx={{ borderRadius: 2, color: '#FFF', fontWeight: 'bold' }}
               onClick={()=>setOpenResetPassword(true)}
             >Trocar Senha</Button>
             <Button
               variant='contained'
-              color='info'
+              color='secondary'
               sx={{ borderRadius: 2, color: '#FFF', fontWeight: 'bold', ml: 2 }}
               onClick={()=>setOpenEditProfile(true)}
             >Editar Perfil</Button>

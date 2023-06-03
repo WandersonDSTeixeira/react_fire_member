@@ -7,7 +7,7 @@ export { useAppContext } from './hook';
 const initialState: DataType = {
     user: null,
     refreshUser: false,
-    darkMode: true
+    darkMode: (localStorage.getItem('theme') === 'false') ? false : true
 }
 
 export const AppContext = createContext<ContextType>({

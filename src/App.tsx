@@ -13,22 +13,16 @@ function App() {
       ...(mode === 'dark'
         ? {
           primary: {
-            main: '#000'
-          },
-          secondary: {
             main: '#FFF'
           }
         }
         : {
           primary: {
-            main: '#FFF'
-          },
-          secondary: {
             main: '#000'
           }
         }
       ),
-      info: {
+      secondary: {
         main: '#EF8700'
       }
     },

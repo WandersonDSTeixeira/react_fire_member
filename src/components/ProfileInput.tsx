@@ -34,7 +34,6 @@ const ProfileInput = (props: Props) => {
       sx={{
         mb: 2,
         '& .MuiInputLabel-root': {
-          color: 'secondary.main',
           fontSize: '12px'
         },
         '&:hover .MuiOutlinedInput-root': {
