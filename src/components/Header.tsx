@@ -12,7 +12,7 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { plataformName } from '../environment';
 import { auth, firestore } from '../firebase';
-import { getDoc, doc } from 'firebase/firestore';
+import { getDoc, doc, updateDoc } from 'firebase/firestore';
 import { useAppContext } from '../context';
 
 const Header = () => {
@@ -37,15 +37,17 @@ const Header = () => {
           avatarUrl: userData?.avatarUrl,
           coverUrl: userData?.coverUrl
         });
+        setDarkMode(userData?.darkMode)
       }
     });
 
       return () => unsubscribe()
   }, [refreshUser]);
 
-  const handleDarkMode = () => {
+  const handleDarkMode = async () => {
     setDarkMode(!darkMode)
     localStorage.setItem('theme', (darkMode ? 'false' : 'true'));
+    await updateDoc(doc(firestore, 'users', user?.id as string), { darkMode: !darkMode });
   }
 
   const handleLogout = async () => {

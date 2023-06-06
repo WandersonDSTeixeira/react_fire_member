@@ -18,17 +18,6 @@ export default () => {
             }
         },
         components: {
-            MuiOutlinedInput: {
-                styleOverrides: {
-                    root: {
-                        color: '#FFF',
-                        fontSize: '12px'
-                    },
-                    notchedOutline: {
-                        borderColor: '#444',
-                    }
-                }
-            },
             MuiButton: {
                 styleOverrides: {
                     root: {

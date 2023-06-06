@@ -22,6 +22,7 @@ type Props = {
   setFamilyName: (newValue: string) => void;
   setPhone: (newValue: string) => void;
   showDeleteAvatarButton: boolean;
+  setShowDeleteAvatarButton: (newValue: boolean) => void;
 }
 
 const ModalEditProfile = (props: Props) => {
@@ -74,6 +75,7 @@ const ModalEditProfile = (props: Props) => {
         const userRef = doc(firestore, 'users', user?.id as string);
         await updateDoc(userRef, { avatarUrl });
         setRefreshUser(!refreshUser);
+        props.setShowDeleteAvatarButton(true);
       } else {
         alert('O arquivo precisa ser uma imagem jpeg, jpg ou png!');
       }
@@ -92,6 +94,7 @@ const ModalEditProfile = (props: Props) => {
     await updateDoc(userRef, { avatarUrl });
 
     setRefreshUser(!refreshUser);
+    props.setShowDeleteAvatarButton(false);
     setDisabled(false);
   }
 

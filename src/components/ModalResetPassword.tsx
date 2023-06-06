@@ -78,6 +78,7 @@ const ModalResetPassword = (props: Props) => {
       onClose={()=>props.setOpenResetPassword(false)}
       PaperProps={{ sx: { borderRadius: 2, maxWidth: 450 } }}
       fullWidth
+      className='h-fit'
     >
       <div className='h-1/2 px-3 pt-3 flex flex-col items-center bg-orange'>
         <div className='bg-[#666] p-3 rounded-3xl'><VpnKeyIcon sx={{ color: '#FFF' }} /></div>

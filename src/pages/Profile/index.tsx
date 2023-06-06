@@ -44,8 +44,22 @@ const Profile = () => {
         setName(userData?.name as string);
         setFamilyName(userData?.familyName as string);
         setPhone(userData?.phone as string);
-        if (ref(storage, `covers/cover${userData?.id}`)) setShowDeleteCoverButton(true);
-        if (ref(storage, `avatars/avatar${userData?.id}`)) setShowDeleteAvatarButton(true);
+        
+        const coverRef = ref(storage, `covers/cover${userData?.id}`)
+        try {
+          await getDownloadURL(coverRef);
+          setShowDeleteCoverButton(true);
+        } catch (error) {
+          setShowDeleteCoverButton(false);
+        }
+
+        const avatarRef = ref(storage, `avatars/avatar${userData?.id}`)
+        try {
+          await getDownloadURL(avatarRef);
+          setShowDeleteAvatarButton(true);
+        } catch (error) {
+          setShowDeleteAvatarButton(false);
+        }
       }
     });
 
@@ -68,6 +82,7 @@ const Profile = () => {
         const userRef = doc(firestore, 'users', user?.id as string);
         await updateDoc(userRef, { coverUrl });
         setRefreshUser(!refreshUser);
+        setShowDeleteCoverButton(true);
       } else {
         alert('O arquivo precisa ser uma imagem jpeg, jpg ou png!');
       }
@@ -88,6 +103,7 @@ const Profile = () => {
     await updateDoc(userRef, { coverUrl });
 
     setRefreshUser(!refreshUser);
+    setShowDeleteCoverButton(false);
     setDisabled(false);
     setLoadingCover(false);
   }
@@ -172,7 +188,7 @@ const Profile = () => {
             >Editar Perfil</Button>
           </div>
           <div className='flex items-center sm:items-start flex-col justify-end'>
-            <span className='text-black dark:text-white text-2xl mb-1 text-center mt-1 sm:mt-0 truncate max-w-[320px] sm:max-w-full'>{ user ? (`${user?.name} ${user?.familyName}`) : 'Nome Completo' }</span>
+            <span className='text-black dark:text-white text-2xl mb-1 text-center mt-1 sm:mt-0 truncate max-w-[310px] sm:max-w-full'>{ user ? (`${user?.name} ${user?.familyName}`) : 'Nome Completo' }</span>
             <span className='text-black dark:text-white mb-1'>{ user ? (`${user?.email}`) : 'Email' }</span>
             <span className='text-black dark:text-white text-sm mb-1'>{ user ? (`${user?.phone}`) : 'Telefone' }</span>
           </div>
@@ -192,6 +208,7 @@ const Profile = () => {
         setFamilyName={setFamilyName}
         setPhone={setPhone}
         showDeleteAvatarButton={showDeleteAvatarButton}
+        setShowDeleteAvatarButton={setShowDeleteAvatarButton}
       />
     </div>
   );
