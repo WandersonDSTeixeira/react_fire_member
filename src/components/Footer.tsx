@@ -7,7 +7,7 @@ const Footer = () => {
 
   return (
     <div className='mx-auto h-32 bg-white dark:bg-stone-800 flex flex-col md:flex-row items-center px-2 pt-3 md:p-10'>
-      <div className='md:ml-10 text-orange text-3xl'>{plataformName}</div>
+      <div className='md:ml-3 text-orange text-3xl'>{plataformName}</div>
       <div className='flex-1 flex flex-col items-center md:items-end'>
         <div className='mb-1 md:mb-3 mt-1 md:mt-0'>
           <Button
