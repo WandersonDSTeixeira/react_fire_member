@@ -2,13 +2,13 @@ Site em construção de plataforma de cursos FireMember feito com React (usando 
 
 —> O que já é possível fazer no site:
 
-*Cadastrar uma nova conta e fazer login;
+* Cadastrar uma nova conta e fazer login;
 
-*Editar informações do perfil;
+* Editar informações do perfil;
 
-*Fazer upload de avatar e capa;
+* Fazer upload de avatar e capa;
 
-*Alternar entre modo claro/escuro;
+* Alternar entre modo claro/escuro;
 
 —> Instalação de dependências:
 
